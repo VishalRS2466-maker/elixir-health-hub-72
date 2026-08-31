@@ -15,6 +15,8 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
 import { Route as AuthenticatedAppRecordsRouteImport } from './routes/_authenticated/app.records'
+import { Route as AuthenticatedAppRecordsIndexRouteImport } from './routes/_authenticated/app.records.index'
+import { Route as AuthenticatedAppRecordsEmergencyCardRouteImport } from './routes/_authenticated/app.records.emergency-card'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -45,19 +47,34 @@ const AuthenticatedAppRecordsRoute = AuthenticatedAppRecordsRouteImport.update({
   path: '/records',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppRecordsIndexRoute =
+  AuthenticatedAppRecordsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAppRecordsRoute,
+  } as any)
+const AuthenticatedAppRecordsEmergencyCardRoute =
+  AuthenticatedAppRecordsEmergencyCardRouteImport.update({
+    id: '/emergency-card',
+    path: '/emergency-card',
+    getParentRoute: () => AuthenticatedAppRecordsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
-  '/app/records': typeof AuthenticatedAppRecordsRoute
+  '/app/records': typeof AuthenticatedAppRecordsRouteWithChildren
   '/app/': typeof AuthenticatedAppIndexRoute
+  '/app/records/emergency-card': typeof AuthenticatedAppRecordsEmergencyCardRoute
+  '/app/records/': typeof AuthenticatedAppRecordsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/app/records': typeof AuthenticatedAppRecordsRoute
   '/app': typeof AuthenticatedAppIndexRoute
+  '/app/records/emergency-card': typeof AuthenticatedAppRecordsEmergencyCardRoute
+  '/app/records': typeof AuthenticatedAppRecordsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -65,14 +82,23 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
-  '/_authenticated/app/records': typeof AuthenticatedAppRecordsRoute
+  '/_authenticated/app/records': typeof AuthenticatedAppRecordsRouteWithChildren
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
+  '/_authenticated/app/records/emergency-card': typeof AuthenticatedAppRecordsEmergencyCardRoute
+  '/_authenticated/app/records/': typeof AuthenticatedAppRecordsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/app' | '/app/records' | '/app/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/app'
+    | '/app/records'
+    | '/app/'
+    | '/app/records/emergency-card'
+    | '/app/records/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/app/records' | '/app'
+  to: '/' | '/auth' | '/app' | '/app/records/emergency-card' | '/app/records'
   id:
     | '__root__'
     | '/'
@@ -81,6 +107,8 @@ export interface FileRouteTypes {
     | '/_authenticated/app'
     | '/_authenticated/app/records'
     | '/_authenticated/app/'
+    | '/_authenticated/app/records/emergency-card'
+    | '/_authenticated/app/records/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -133,16 +161,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppRecordsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/records/': {
+      id: '/_authenticated/app/records/'
+      path: '/'
+      fullPath: '/app/records/'
+      preLoaderRoute: typeof AuthenticatedAppRecordsIndexRouteImport
+      parentRoute: typeof AuthenticatedAppRecordsRoute
+    }
+    '/_authenticated/app/records/emergency-card': {
+      id: '/_authenticated/app/records/emergency-card'
+      path: '/emergency-card'
+      fullPath: '/app/records/emergency-card'
+      preLoaderRoute: typeof AuthenticatedAppRecordsEmergencyCardRouteImport
+      parentRoute: typeof AuthenticatedAppRecordsRoute
+    }
   }
 }
 
+interface AuthenticatedAppRecordsRouteChildren {
+  AuthenticatedAppRecordsEmergencyCardRoute: typeof AuthenticatedAppRecordsEmergencyCardRoute
+  AuthenticatedAppRecordsIndexRoute: typeof AuthenticatedAppRecordsIndexRoute
+}
+
+const AuthenticatedAppRecordsRouteChildren: AuthenticatedAppRecordsRouteChildren =
+  {
+    AuthenticatedAppRecordsEmergencyCardRoute:
+      AuthenticatedAppRecordsEmergencyCardRoute,
+    AuthenticatedAppRecordsIndexRoute: AuthenticatedAppRecordsIndexRoute,
+  }
+
+const AuthenticatedAppRecordsRouteWithChildren =
+  AuthenticatedAppRecordsRoute._addFileChildren(
+    AuthenticatedAppRecordsRouteChildren,
+  )
+
 interface AuthenticatedAppRouteChildren {
-  AuthenticatedAppRecordsRoute: typeof AuthenticatedAppRecordsRoute
+  AuthenticatedAppRecordsRoute: typeof AuthenticatedAppRecordsRouteWithChildren
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
 }
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
-  AuthenticatedAppRecordsRoute: AuthenticatedAppRecordsRoute,
+  AuthenticatedAppRecordsRoute: AuthenticatedAppRecordsRouteWithChildren,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
 }
 
