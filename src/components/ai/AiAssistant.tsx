@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 type Msg = { role: "user" | "assistant"; content: string };
-type AiContext = { label: string; data?: string } | null;
+type AiContext = { label: string; data?: string | undefined } | null;
 
 type AiApi = {
   open: (ctx?: AiContext, seedQuestion?: string) => void;
@@ -171,7 +171,7 @@ export function AskAiButton({
   className,
 }: {
   label: string;
-  data?: string;
+  data?: string | undefined;
   question: string;
   className?: string;
 }) {
