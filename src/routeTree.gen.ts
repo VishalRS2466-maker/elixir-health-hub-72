@@ -14,6 +14,9 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
+import { Route as AuthenticatedAppExploreRouteImport } from './routes/_authenticated/app.explore'
+import { Route as AuthenticatedAppFirstAidRouteImport } from './routes/_authenticated/app.first-aid'
+import { Route as AuthenticatedAppHospitalRouteImport } from './routes/_authenticated/app.hospital'
 import { Route as AuthenticatedAppRecordsRouteImport } from './routes/_authenticated/app.records'
 import { Route as AuthenticatedAppRecordsIndexRouteImport } from './routes/_authenticated/app.records.index'
 import { Route as AuthenticatedAppRecordsEmergencyCardRouteImport } from './routes/_authenticated/app.records.emergency-card'
@@ -42,6 +45,23 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppExploreRoute = AuthenticatedAppExploreRouteImport.update({
+  id: '/explore',
+  path: '/explore',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppFirstAidRoute =
+  AuthenticatedAppFirstAidRouteImport.update({
+    id: '/first-aid',
+    path: '/first-aid',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppHospitalRoute =
+  AuthenticatedAppHospitalRouteImport.update({
+    id: '/hospital',
+    path: '/hospital',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppRecordsRoute = AuthenticatedAppRecordsRouteImport.update({
   id: '/records',
   path: '/records',
@@ -64,6 +84,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
+  '/app/explore': typeof AuthenticatedAppExploreRoute
+  '/app/first-aid': typeof AuthenticatedAppFirstAidRoute
+  '/app/hospital': typeof AuthenticatedAppHospitalRoute
   '/app/records': typeof AuthenticatedAppRecordsRouteWithChildren
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/records/emergency-card': typeof AuthenticatedAppRecordsEmergencyCardRoute
@@ -72,6 +95,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/app/explore': typeof AuthenticatedAppExploreRoute
+  '/app/first-aid': typeof AuthenticatedAppFirstAidRoute
+  '/app/hospital': typeof AuthenticatedAppHospitalRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/records/emergency-card': typeof AuthenticatedAppRecordsEmergencyCardRoute
   '/app/records': typeof AuthenticatedAppRecordsIndexRoute
@@ -82,6 +108,9 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
+  '/_authenticated/app/explore': typeof AuthenticatedAppExploreRoute
+  '/_authenticated/app/first-aid': typeof AuthenticatedAppFirstAidRoute
+  '/_authenticated/app/hospital': typeof AuthenticatedAppHospitalRoute
   '/_authenticated/app/records': typeof AuthenticatedAppRecordsRouteWithChildren
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/records/emergency-card': typeof AuthenticatedAppRecordsEmergencyCardRoute
@@ -93,18 +122,32 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/app'
+    | '/app/explore'
+    | '/app/first-aid'
+    | '/app/hospital'
     | '/app/records'
     | '/app/'
     | '/app/records/emergency-card'
     | '/app/records/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/app' | '/app/records/emergency-card' | '/app/records'
+  to:
+    | '/'
+    | '/auth'
+    | '/app/explore'
+    | '/app/first-aid'
+    | '/app/hospital'
+    | '/app'
+    | '/app/records/emergency-card'
+    | '/app/records'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/app'
+    | '/_authenticated/app/explore'
+    | '/_authenticated/app/first-aid'
+    | '/_authenticated/app/hospital'
     | '/_authenticated/app/records'
     | '/_authenticated/app/'
     | '/_authenticated/app/records/emergency-card'
@@ -154,6 +197,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/explore': {
+      id: '/_authenticated/app/explore'
+      path: '/explore'
+      fullPath: '/app/explore'
+      preLoaderRoute: typeof AuthenticatedAppExploreRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/first-aid': {
+      id: '/_authenticated/app/first-aid'
+      path: '/first-aid'
+      fullPath: '/app/first-aid'
+      preLoaderRoute: typeof AuthenticatedAppFirstAidRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/hospital': {
+      id: '/_authenticated/app/hospital'
+      path: '/hospital'
+      fullPath: '/app/hospital'
+      preLoaderRoute: typeof AuthenticatedAppHospitalRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/records': {
       id: '/_authenticated/app/records'
       path: '/records'
@@ -196,11 +260,17 @@ const AuthenticatedAppRecordsRouteWithChildren =
   )
 
 interface AuthenticatedAppRouteChildren {
+  AuthenticatedAppExploreRoute: typeof AuthenticatedAppExploreRoute
+  AuthenticatedAppFirstAidRoute: typeof AuthenticatedAppFirstAidRoute
+  AuthenticatedAppHospitalRoute: typeof AuthenticatedAppHospitalRoute
   AuthenticatedAppRecordsRoute: typeof AuthenticatedAppRecordsRouteWithChildren
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
 }
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
+  AuthenticatedAppExploreRoute: AuthenticatedAppExploreRoute,
+  AuthenticatedAppFirstAidRoute: AuthenticatedAppFirstAidRoute,
+  AuthenticatedAppHospitalRoute: AuthenticatedAppHospitalRoute,
   AuthenticatedAppRecordsRoute: AuthenticatedAppRecordsRouteWithChildren,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
 }
