@@ -247,7 +247,7 @@ function DoctorPage() {
         {(appointments.data ?? []).map((a) => (
           <article key={a.id} className="card-soft flex flex-wrap items-center justify-between gap-3 p-4">
             <div>
-              <p className="font-semibold">{a.profiles?.full_name ?? "Patient"}</p>
+              <p className="font-semibold">{a.patient_name}</p>
               <p className="text-xs text-muted-foreground">
                 {new Date(a.slot_at).toLocaleString()} · {a.mode}
               </p>

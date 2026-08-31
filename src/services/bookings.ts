@@ -18,7 +18,19 @@ export async function listDoctorAppointments(doctorId: string) {
     .eq("doctor_id", doctorId)
     .order("slot_at", { ascending: true });
   if (error) throw error;
-  return data ?? [];
+  const rows = data ?? [];
+  const patientIds = [...new Set(rows.map((r) => r.patient_id))];
+  if (patientIds.length === 0) return rows.map((r) => ({ ...r, patient_name: "Patient" }));
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("id, full_name, universal_id")
+    .in("id", patientIds);
+  const byId = new Map((profiles ?? []).map((p) => [p.id, p]));
+  return rows.map((r) => ({
+    ...r,
+    patient_name: byId.get(r.patient_id)?.full_name ?? "Patient",
+    patient_universal_id: byId.get(r.patient_id)?.universal_id ?? "",
+  }));
 }
 
 export async function bookAppointment(input: TablesInsert<"appointments">) {
