@@ -294,7 +294,7 @@ function RecordForm({
   onClose,
   onSaved,
 }: {
-  record: Record | null;
+  record: MedRecord | null;
   onClose: () => void;
   onSaved: () => void;
 }) {
