@@ -171,7 +171,7 @@ export function AskAiButton({
   className,
 }: {
   label: string;
-  data?: string;
+  data?: string | undefined;
   question: string;
   className?: string;
 }) {
