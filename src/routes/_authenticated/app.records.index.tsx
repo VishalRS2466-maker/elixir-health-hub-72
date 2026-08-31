@@ -35,7 +35,7 @@ export const Route = createFileRoute("/_authenticated/app/records/")({
   component: RecordsPage,
 });
 
-type Record = Tables<"medical_records">;
+type MedRecord = Tables<"medical_records">;
 
 function RecordsPage() {
   const { user, profile } = useSession();
@@ -43,7 +43,7 @@ function RecordsPage() {
   const ai = useAi();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | RecordCategory>("all");
-  const [editing, setEditing] = useState<Record | null>(null);
+  const [editing, setEditing] = useState<MedRecord | null>(null);
   const [creating, setCreating] = useState(false);
 
   const records = useQuery({
@@ -67,7 +67,7 @@ function RecordsPage() {
   }, [records.data, filter, search]);
 
   const grouped = useMemo(() => {
-    const map = new Map<string, Record[]>();
+    const map = new Map<string, MedRecord[]>();
     for (const r of filtered) {
       const year = new Date(r.record_date).getFullYear().toString();
       map.set(year, [...(map.get(year) ?? []), r]);

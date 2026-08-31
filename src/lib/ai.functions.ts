@@ -10,8 +10,8 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export type AiChatInput = {
   messages: { role: "user" | "assistant"; content: string }[];
-  contextLabel?: string;
-  contextData?: string;
+  contextLabel?: string | undefined;
+  contextData?: string | undefined;
 };
 
 const SYSTEM_PROMPT = `You are the ELIXIR AI Healthcare Assistant inside a patient-centric health app.

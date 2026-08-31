@@ -14,7 +14,7 @@ export async function listAppointments(patientId: string) {
 export async function listDoctorAppointments(doctorId: string) {
   const { data, error } = await supabase
     .from("appointments")
-    .select("*, profiles:patient_id(full_name, universal_id)")
+    .select("*")
     .eq("doctor_id", doctorId)
     .order("slot_at", { ascending: true });
   if (error) throw error;

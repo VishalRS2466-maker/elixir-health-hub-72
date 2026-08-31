@@ -43,10 +43,10 @@ export async function listReminders(patientId: string) {
 }
 
 export async function setReminderStatus(id: string, status: "taken" | "skipped" | "snoozed") {
-  const patch: Record<string, unknown> = { status, acted_at: new Date().toISOString() };
+  const patch: { status: string; acted_at: string; scheduled_at?: string } = { status, acted_at: new Date().toISOString() };
   if (status === "snoozed") {
-    patch["scheduled_at"] = new Date(Date.now() + 15 * 60 * 1000).toISOString();
-    patch["status"] = "upcoming";
+    patch.scheduled_at = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+    patch.status = "upcoming";
   }
   const { error } = await supabase.from("reminder_logs").update(patch).eq("id", id);
   if (error) throw error;
