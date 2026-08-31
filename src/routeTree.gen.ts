@@ -10,33 +10,111 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
+import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
+import { Route as AuthenticatedAppRecordsRouteImport } from './routes/_authenticated/app.records'
+import { Route as AuthenticatedAppRecordsIndexRouteImport } from './routes/_authenticated/app.records.index'
+import { Route as AuthenticatedAppRecordsEmergencyCardRouteImport } from './routes/_authenticated/app.records.emergency-card'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAppRoute = AuthenticatedAppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppRecordsRoute = AuthenticatedAppRecordsRouteImport.update({
+  id: '/records',
+  path: '/records',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppRecordsIndexRoute =
+  AuthenticatedAppRecordsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAppRecordsRoute,
+  } as any)
+const AuthenticatedAppRecordsEmergencyCardRoute =
+  AuthenticatedAppRecordsEmergencyCardRouteImport.update({
+    id: '/emergency-card',
+    path: '/emergency-card',
+    getParentRoute: () => AuthenticatedAppRecordsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/app': typeof AuthenticatedAppRouteWithChildren
+  '/app/records': typeof AuthenticatedAppRecordsRouteWithChildren
+  '/app/': typeof AuthenticatedAppIndexRoute
+  '/app/records/emergency-card': typeof AuthenticatedAppRecordsEmergencyCardRoute
+  '/app/records/': typeof AuthenticatedAppRecordsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/app': typeof AuthenticatedAppIndexRoute
+  '/app/records/emergency-card': typeof AuthenticatedAppRecordsEmergencyCardRoute
+  '/app/records': typeof AuthenticatedAppRecordsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
+  '/_authenticated/app/records': typeof AuthenticatedAppRecordsRouteWithChildren
+  '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
+  '/_authenticated/app/records/emergency-card': typeof AuthenticatedAppRecordsEmergencyCardRoute
+  '/_authenticated/app/records/': typeof AuthenticatedAppRecordsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/app'
+    | '/app/records'
+    | '/app/'
+    | '/app/records/emergency-card'
+    | '/app/records/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/auth' | '/app' | '/app/records/emergency-card' | '/app/records'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/app'
+    | '/_authenticated/app/records'
+    | '/_authenticated/app/'
+    | '/_authenticated/app/records/emergency-card'
+    | '/_authenticated/app/records/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +126,103 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/app': {
+      id: '/_authenticated/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AuthenticatedAppRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/app/': {
+      id: '/_authenticated/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/records': {
+      id: '/_authenticated/app/records'
+      path: '/records'
+      fullPath: '/app/records'
+      preLoaderRoute: typeof AuthenticatedAppRecordsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/records/': {
+      id: '/_authenticated/app/records/'
+      path: '/'
+      fullPath: '/app/records/'
+      preLoaderRoute: typeof AuthenticatedAppRecordsIndexRouteImport
+      parentRoute: typeof AuthenticatedAppRecordsRoute
+    }
+    '/_authenticated/app/records/emergency-card': {
+      id: '/_authenticated/app/records/emergency-card'
+      path: '/emergency-card'
+      fullPath: '/app/records/emergency-card'
+      preLoaderRoute: typeof AuthenticatedAppRecordsEmergencyCardRouteImport
+      parentRoute: typeof AuthenticatedAppRecordsRoute
+    }
   }
 }
 
+interface AuthenticatedAppRecordsRouteChildren {
+  AuthenticatedAppRecordsEmergencyCardRoute: typeof AuthenticatedAppRecordsEmergencyCardRoute
+  AuthenticatedAppRecordsIndexRoute: typeof AuthenticatedAppRecordsIndexRoute
+}
+
+const AuthenticatedAppRecordsRouteChildren: AuthenticatedAppRecordsRouteChildren =
+  {
+    AuthenticatedAppRecordsEmergencyCardRoute:
+      AuthenticatedAppRecordsEmergencyCardRoute,
+    AuthenticatedAppRecordsIndexRoute: AuthenticatedAppRecordsIndexRoute,
+  }
+
+const AuthenticatedAppRecordsRouteWithChildren =
+  AuthenticatedAppRecordsRoute._addFileChildren(
+    AuthenticatedAppRecordsRouteChildren,
+  )
+
+interface AuthenticatedAppRouteChildren {
+  AuthenticatedAppRecordsRoute: typeof AuthenticatedAppRecordsRouteWithChildren
+  AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
+}
+
+const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
+  AuthenticatedAppRecordsRoute: AuthenticatedAppRecordsRouteWithChildren,
+  AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
+}
+
+const AuthenticatedAppRouteWithChildren =
+  AuthenticatedAppRoute._addFileChildren(AuthenticatedAppRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAppRoute: typeof AuthenticatedAppRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAppRoute: AuthenticatedAppRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
