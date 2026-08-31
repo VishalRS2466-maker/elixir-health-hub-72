@@ -16,12 +16,15 @@ import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/ap
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
 import { Route as AuthenticatedAppActivityRouteImport } from './routes/_authenticated/app.activity'
 import { Route as AuthenticatedAppConsentRouteImport } from './routes/_authenticated/app.consent'
+import { Route as AuthenticatedAppDoctorRouteImport } from './routes/_authenticated/app.doctor'
 import { Route as AuthenticatedAppExploreRouteImport } from './routes/_authenticated/app.explore'
 import { Route as AuthenticatedAppFirstAidRouteImport } from './routes/_authenticated/app.first-aid'
 import { Route as AuthenticatedAppHospitalRouteImport } from './routes/_authenticated/app.hospital'
 import { Route as AuthenticatedAppMedicinesRouteImport } from './routes/_authenticated/app.medicines'
 import { Route as AuthenticatedAppProfileRouteImport } from './routes/_authenticated/app.profile'
 import { Route as AuthenticatedAppRecordsRouteImport } from './routes/_authenticated/app.records'
+import { Route as AuthenticatedAppAdminIndexRouteImport } from './routes/_authenticated/app.admin.index'
+import { Route as AuthenticatedAppAdminDirectoryRouteImport } from './routes/_authenticated/app.admin.directory'
 import { Route as AuthenticatedAppRecordsIndexRouteImport } from './routes/_authenticated/app.records.index'
 import { Route as AuthenticatedAppRecordsEmergencyCardRouteImport } from './routes/_authenticated/app.records.emergency-card'
 
@@ -60,6 +63,11 @@ const AuthenticatedAppConsentRoute = AuthenticatedAppConsentRouteImport.update({
   path: '/consent',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppDoctorRoute = AuthenticatedAppDoctorRouteImport.update({
+  id: '/doctor',
+  path: '/doctor',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppExploreRoute = AuthenticatedAppExploreRouteImport.update({
   id: '/explore',
   path: '/explore',
@@ -93,6 +101,18 @@ const AuthenticatedAppRecordsRoute = AuthenticatedAppRecordsRouteImport.update({
   path: '/records',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppAdminIndexRoute =
+  AuthenticatedAppAdminIndexRouteImport.update({
+    id: '/admin/',
+    path: '/admin/',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppAdminDirectoryRoute =
+  AuthenticatedAppAdminDirectoryRouteImport.update({
+    id: '/admin/directory',
+    path: '/admin/directory',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppRecordsIndexRoute =
   AuthenticatedAppRecordsIndexRouteImport.update({
     id: '/',
@@ -112,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/app/activity': typeof AuthenticatedAppActivityRoute
   '/app/consent': typeof AuthenticatedAppConsentRoute
+  '/app/doctor': typeof AuthenticatedAppDoctorRoute
   '/app/explore': typeof AuthenticatedAppExploreRoute
   '/app/first-aid': typeof AuthenticatedAppFirstAidRoute
   '/app/hospital': typeof AuthenticatedAppHospitalRoute
@@ -119,7 +140,9 @@ export interface FileRoutesByFullPath {
   '/app/profile': typeof AuthenticatedAppProfileRoute
   '/app/records': typeof AuthenticatedAppRecordsRouteWithChildren
   '/app/': typeof AuthenticatedAppIndexRoute
+  '/app/admin/directory': typeof AuthenticatedAppAdminDirectoryRoute
   '/app/records/emergency-card': typeof AuthenticatedAppRecordsEmergencyCardRoute
+  '/app/admin/': typeof AuthenticatedAppAdminIndexRoute
   '/app/records/': typeof AuthenticatedAppRecordsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -127,13 +150,16 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/app/activity': typeof AuthenticatedAppActivityRoute
   '/app/consent': typeof AuthenticatedAppConsentRoute
+  '/app/doctor': typeof AuthenticatedAppDoctorRoute
   '/app/explore': typeof AuthenticatedAppExploreRoute
   '/app/first-aid': typeof AuthenticatedAppFirstAidRoute
   '/app/hospital': typeof AuthenticatedAppHospitalRoute
   '/app/medicines': typeof AuthenticatedAppMedicinesRoute
   '/app/profile': typeof AuthenticatedAppProfileRoute
   '/app': typeof AuthenticatedAppIndexRoute
+  '/app/admin/directory': typeof AuthenticatedAppAdminDirectoryRoute
   '/app/records/emergency-card': typeof AuthenticatedAppRecordsEmergencyCardRoute
+  '/app/admin': typeof AuthenticatedAppAdminIndexRoute
   '/app/records': typeof AuthenticatedAppRecordsIndexRoute
 }
 export interface FileRoutesById {
@@ -144,6 +170,7 @@ export interface FileRoutesById {
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/_authenticated/app/activity': typeof AuthenticatedAppActivityRoute
   '/_authenticated/app/consent': typeof AuthenticatedAppConsentRoute
+  '/_authenticated/app/doctor': typeof AuthenticatedAppDoctorRoute
   '/_authenticated/app/explore': typeof AuthenticatedAppExploreRoute
   '/_authenticated/app/first-aid': typeof AuthenticatedAppFirstAidRoute
   '/_authenticated/app/hospital': typeof AuthenticatedAppHospitalRoute
@@ -151,7 +178,9 @@ export interface FileRoutesById {
   '/_authenticated/app/profile': typeof AuthenticatedAppProfileRoute
   '/_authenticated/app/records': typeof AuthenticatedAppRecordsRouteWithChildren
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
+  '/_authenticated/app/admin/directory': typeof AuthenticatedAppAdminDirectoryRoute
   '/_authenticated/app/records/emergency-card': typeof AuthenticatedAppRecordsEmergencyCardRoute
+  '/_authenticated/app/admin/': typeof AuthenticatedAppAdminIndexRoute
   '/_authenticated/app/records/': typeof AuthenticatedAppRecordsIndexRoute
 }
 export interface FileRouteTypes {
@@ -162,6 +191,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/app/activity'
     | '/app/consent'
+    | '/app/doctor'
     | '/app/explore'
     | '/app/first-aid'
     | '/app/hospital'
@@ -169,7 +199,9 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/app/records'
     | '/app/'
+    | '/app/admin/directory'
     | '/app/records/emergency-card'
+    | '/app/admin/'
     | '/app/records/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -177,13 +209,16 @@ export interface FileRouteTypes {
     | '/auth'
     | '/app/activity'
     | '/app/consent'
+    | '/app/doctor'
     | '/app/explore'
     | '/app/first-aid'
     | '/app/hospital'
     | '/app/medicines'
     | '/app/profile'
     | '/app'
+    | '/app/admin/directory'
     | '/app/records/emergency-card'
+    | '/app/admin'
     | '/app/records'
   id:
     | '__root__'
@@ -193,6 +228,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app'
     | '/_authenticated/app/activity'
     | '/_authenticated/app/consent'
+    | '/_authenticated/app/doctor'
     | '/_authenticated/app/explore'
     | '/_authenticated/app/first-aid'
     | '/_authenticated/app/hospital'
@@ -200,7 +236,9 @@ export interface FileRouteTypes {
     | '/_authenticated/app/profile'
     | '/_authenticated/app/records'
     | '/_authenticated/app/'
+    | '/_authenticated/app/admin/directory'
     | '/_authenticated/app/records/emergency-card'
+    | '/_authenticated/app/admin/'
     | '/_authenticated/app/records/'
   fileRoutesById: FileRoutesById
 }
@@ -261,6 +299,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppConsentRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/doctor': {
+      id: '/_authenticated/app/doctor'
+      path: '/doctor'
+      fullPath: '/app/doctor'
+      preLoaderRoute: typeof AuthenticatedAppDoctorRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/explore': {
       id: '/_authenticated/app/explore'
       path: '/explore'
@@ -303,6 +348,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppRecordsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/admin/': {
+      id: '/_authenticated/app/admin/'
+      path: '/admin'
+      fullPath: '/app/admin/'
+      preLoaderRoute: typeof AuthenticatedAppAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/admin/directory': {
+      id: '/_authenticated/app/admin/directory'
+      path: '/admin/directory'
+      fullPath: '/app/admin/directory'
+      preLoaderRoute: typeof AuthenticatedAppAdminDirectoryRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/records/': {
       id: '/_authenticated/app/records/'
       path: '/'
@@ -340,6 +399,7 @@ const AuthenticatedAppRecordsRouteWithChildren =
 interface AuthenticatedAppRouteChildren {
   AuthenticatedAppActivityRoute: typeof AuthenticatedAppActivityRoute
   AuthenticatedAppConsentRoute: typeof AuthenticatedAppConsentRoute
+  AuthenticatedAppDoctorRoute: typeof AuthenticatedAppDoctorRoute
   AuthenticatedAppExploreRoute: typeof AuthenticatedAppExploreRoute
   AuthenticatedAppFirstAidRoute: typeof AuthenticatedAppFirstAidRoute
   AuthenticatedAppHospitalRoute: typeof AuthenticatedAppHospitalRoute
@@ -347,11 +407,14 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppProfileRoute: typeof AuthenticatedAppProfileRoute
   AuthenticatedAppRecordsRoute: typeof AuthenticatedAppRecordsRouteWithChildren
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
+  AuthenticatedAppAdminDirectoryRoute: typeof AuthenticatedAppAdminDirectoryRoute
+  AuthenticatedAppAdminIndexRoute: typeof AuthenticatedAppAdminIndexRoute
 }
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppActivityRoute: AuthenticatedAppActivityRoute,
   AuthenticatedAppConsentRoute: AuthenticatedAppConsentRoute,
+  AuthenticatedAppDoctorRoute: AuthenticatedAppDoctorRoute,
   AuthenticatedAppExploreRoute: AuthenticatedAppExploreRoute,
   AuthenticatedAppFirstAidRoute: AuthenticatedAppFirstAidRoute,
   AuthenticatedAppHospitalRoute: AuthenticatedAppHospitalRoute,
@@ -359,6 +422,8 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppProfileRoute: AuthenticatedAppProfileRoute,
   AuthenticatedAppRecordsRoute: AuthenticatedAppRecordsRouteWithChildren,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
+  AuthenticatedAppAdminDirectoryRoute: AuthenticatedAppAdminDirectoryRoute,
+  AuthenticatedAppAdminIndexRoute: AuthenticatedAppAdminIndexRoute,
 }
 
 const AuthenticatedAppRouteWithChildren =
