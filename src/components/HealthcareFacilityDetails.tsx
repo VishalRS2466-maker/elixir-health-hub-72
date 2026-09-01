@@ -120,7 +120,7 @@ export function HealthcareFacilityDetails({
           {elixir?.bookingAvailable && facility.kind === "hospitals" && (
             <>
               <Button asChild className="rounded-xl">
-                <Link to="/app/hospital" search={{ hospital: elixir.id } as never}>
+                <Link to="/app/hospital">
                   <Stethoscope className="mr-2 h-4 w-4" /> View doctors
                 </Link>
               </Button>
