@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Building2, FlaskConical, MapPin, Phone, Store } from "lucide-react";
+import { Building2, CalendarPlus, FlaskConical, MapPin, Phone, Store } from "lucide-react";
 import * as DirectoryService from "@/services/directory";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/EmptyState";
 import { AskAiButton } from "@/components/ai/AiAssistant";
