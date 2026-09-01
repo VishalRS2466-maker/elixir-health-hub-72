@@ -182,6 +182,8 @@ function Card({
   tags,
   lat,
   lng,
+  actionTo,
+  actionLabel,
 }: {
   title: string;
   subtitle: string;
@@ -190,6 +192,8 @@ function Card({
   tags?: string[];
   lat: number | null;
   lng: number | null;
+  actionTo?: "/app/hospital";
+  actionLabel?: string;
 }) {
   return (
     <article className="card-soft p-4">
