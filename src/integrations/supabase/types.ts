@@ -331,6 +331,7 @@ export type Database = {
           created_at: string
           distance_km: number
           emergency: boolean
+          google_place_id: string | null
           id: string
           is_demo: boolean
           lat: number | null
@@ -345,6 +346,7 @@ export type Database = {
           created_at?: string
           distance_km?: number
           emergency?: boolean
+          google_place_id?: string | null
           id?: string
           is_demo?: boolean
           lat?: number | null
@@ -359,6 +361,7 @@ export type Database = {
           created_at?: string
           distance_km?: number
           emergency?: boolean
+          google_place_id?: string | null
           id?: string
           is_demo?: boolean
           lat?: number | null
@@ -413,6 +416,7 @@ export type Database = {
           city: string
           created_at: string
           distance_km: number
+          google_place_id: string | null
           home_collection: boolean
           id: string
           is_demo: boolean
@@ -427,6 +431,7 @@ export type Database = {
           city?: string
           created_at?: string
           distance_km?: number
+          google_place_id?: string | null
           home_collection?: boolean
           id?: string
           is_demo?: boolean
@@ -441,6 +446,7 @@ export type Database = {
           city?: string
           created_at?: string
           distance_km?: number
+          google_place_id?: string | null
           home_collection?: boolean
           id?: string
           is_demo?: boolean
@@ -614,6 +620,7 @@ export type Database = {
           city: string
           created_at: string
           distance_km: number
+          google_place_id: string | null
           id: string
           is_demo: boolean
           lat: number | null
@@ -628,6 +635,7 @@ export type Database = {
           city?: string
           created_at?: string
           distance_km?: number
+          google_place_id?: string | null
           id?: string
           is_demo?: boolean
           lat?: number | null
@@ -642,6 +650,7 @@ export type Database = {
           city?: string
           created_at?: string
           distance_km?: number
+          google_place_id?: string | null
           id?: string
           is_demo?: boolean
           lat?: number | null
