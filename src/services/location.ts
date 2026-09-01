@@ -100,6 +100,7 @@ export function distanceKm(a: Coords, b: Coords): number {
 
 export function formatDistance(km: number | null): string {
   if (km === null) return "Nearby";
+  if (km <= 0) return "Very close by";
   if (km < 1) return `${Math.round(km * 1000)} m away`;
   return `${km} km away`;
 }

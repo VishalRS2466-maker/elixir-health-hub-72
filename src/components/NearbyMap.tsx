@@ -91,6 +91,11 @@ export function NearbyMap({
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(!BROWSER_KEY);
 
+  // Google reports key/referrer/billing problems through this global hook.
+  useEffect(() => {
+    (window as unknown as { gm_authFailure?: () => void }).gm_authFailure = () => setFailed(true);
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     loadMaps()
