@@ -29,9 +29,23 @@ function ExplorePage() {
   const pharmacies = useQuery({ queryKey: ["pharmacies"], queryFn: DirectoryService.listPharmacies });
   const labs = useQuery({ queryKey: ["labs"], queryFn: DirectoryService.listLaboratories });
 
-  const q = search.toLowerCase();
-  const match = (name: string, address: string) =>
-    !q || name.toLowerCase().includes(q) || address.toLowerCase().includes(q);
+  const q = search.trim().toLowerCase();
+  const match = (name: string, address: string, extra: string[] = []) =>
+    !q ||
+    name.toLowerCase().includes(q) ||
+    address.toLowerCase().includes(q) ||
+    extra.some((e) => e.toLowerCase().includes(q));
+
+  const active = tab === "hospitals" ? hospitals : tab === "pharmacies" ? pharmacies : labs;
+  const filteredHospitals = (hospitals.data ?? []).filter((h) => match(h.name, h.address, h.specialties));
+  const filteredPharmacies = (pharmacies.data ?? []).filter((p) => match(p.name, p.address));
+  const filteredLabs = (labs.data ?? []).filter((l) => match(l.name, l.address, l.kinds));
+  const visibleCount =
+    tab === "hospitals"
+      ? filteredHospitals.length
+      : tab === "pharmacies"
+        ? filteredPharmacies.length
+        : filteredLabs.length;
 
   return (
     <div className="space-y-5">
