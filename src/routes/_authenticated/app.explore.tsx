@@ -82,57 +82,91 @@ function ExplorePage() {
         ))}
       </div>
 
-      {tab === "hospitals" &&
-        (hospitals.data ?? [])
-          .filter((h) => match(h.name, h.address))
-          .map((h) => (
-            <Card
-              key={h.id}
-              title={h.name}
-              subtitle={`${h.distance_km} km away${h.emergency ? " · 24x7 Emergency" : ""}`}
-              address={h.address}
-              phone={h.phone}
-              tags={h.specialties}
-              lat={h.lat}
-              lng={h.lng}
-            />
+      {active.isLoading && (
+        <div className="space-y-3">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="card-soft h-28 animate-pulse bg-muted/60" />
           ))}
+        </div>
+      )}
 
-      {tab === "pharmacies" &&
-        (pharmacies.data ?? [])
-          .filter((p) => match(p.name, p.address))
-          .map((p) => (
-            <Card
-              key={p.id}
-              title={p.name}
-              subtitle={`${p.distance_km} km away · ${p.open_24x7 ? "Open now (24 hours)" : p.opening_hours}`}
-              address={p.address}
-              phone={p.phone}
-              lat={p.lat}
-              lng={p.lng}
+      {active.isError && (
+        <EmptyState
+          icon={MapPin}
+          title="Could not load nearby places"
+          description="Something went wrong while fetching this list."
+          action={
+            <Button className="rounded-xl" onClick={() => void active.refetch()}>
+              Try again
+            </Button>
+          }
+        />
+      )}
+
+      {!active.isLoading && !active.isError && (
+        <>
+          {tab === "hospitals" &&
+            filteredHospitals.map((h) => (
+              <Card
+                key={h.id}
+                title={h.name}
+                subtitle={`${h.distance_km} km away${h.emergency ? " · 24x7 Emergency" : ""}`}
+                address={h.address}
+                phone={h.phone}
+                tags={h.specialties}
+                lat={h.lat}
+                lng={h.lng}
+                actionTo="/app/hospital"
+                actionLabel="Book a doctor"
+              />
+            ))}
+
+          {tab === "pharmacies" &&
+            filteredPharmacies.map((p) => (
+              <Card
+                key={p.id}
+                title={p.name}
+                subtitle={`${p.distance_km} km away · ${p.open_24x7 ? "Open now (24 hours)" : p.opening_hours}`}
+                address={p.address}
+                phone={p.phone}
+                lat={p.lat}
+                lng={p.lng}
+              />
+            ))}
+
+          {tab === "labs" &&
+            filteredLabs.map((l) => (
+              <Card
+                key={l.id}
+                title={l.name}
+                subtitle={`${l.distance_km} km away${l.home_collection ? " · Home collection" : ""}`}
+                address={l.address}
+                phone={l.phone}
+                tags={l.kinds.map((k) => (k === "test" ? "Lab tests" : "Scans"))}
+                lat={l.lat}
+                lng={l.lng}
+                actionTo="/app/hospital"
+                actionLabel="Book test or scan"
+              />
+            ))}
+
+          {visibleCount === 0 && (
+            <EmptyState
+              icon={MapPin}
+              title={q ? `No matches for “${search.trim()}”` : "Nothing nearby yet"}
+              description={
+                q ? "Try a different name, area or speciality." : "Provider data will appear here."
+              }
+              action={
+                q ? (
+                  <Button variant="outline" className="rounded-xl" onClick={() => setSearch("")}>
+                    Clear search
+                  </Button>
+                ) : undefined
+              }
             />
-          ))}
-
-      {tab === "labs" &&
-        (labs.data ?? [])
-          .filter((l) => match(l.name, l.address))
-          .map((l) => (
-            <Card
-              key={l.id}
-              title={l.name}
-              subtitle={`${l.distance_km} km away${l.home_collection ? " · Home collection" : ""}`}
-              address={l.address}
-              phone={l.phone}
-              tags={l.kinds.map((k) => (k === "test" ? "Lab tests" : "Scans"))}
-              lat={l.lat}
-              lng={l.lng}
-            />
-          ))}
-
-      {((tab === "hospitals" && (hospitals.data ?? []).length === 0) ||
-        (tab === "pharmacies" && (pharmacies.data ?? []).length === 0) ||
-        (tab === "labs" && (labs.data ?? []).length === 0)) && (
-        <EmptyState icon={MapPin} title="Nothing nearby yet" description="Provider data will appear here." />
+          )}
+        </>
       )}
 
       <AskAiButton label="Explore nearby healthcare" question="Find me a nearby test centre" />
