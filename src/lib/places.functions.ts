@@ -15,6 +15,15 @@ const KIND_TYPES = {
   hospitals: ["hospital"],
   pharmacies: ["pharmacy", "drugstore"],
   labs: ["medical_lab"],
+  scans: ["medical_lab"],
+} as const;
+
+/** Text used when the caller searches by name/keyword. */
+const KIND_TEXT = {
+  hospitals: "hospital",
+  pharmacies: "pharmacy",
+  labs: "diagnostic lab",
+  scans: "MRI CT scan diagnostic imaging centre",
 } as const;
 
 const FIELD_MASK = [
@@ -32,7 +41,7 @@ const FIELD_MASK = [
 ].join(",");
 
 const inputSchema = z.object({
-  kind: z.enum(["hospitals", "pharmacies", "labs"]),
+  kind: z.enum(["hospitals", "pharmacies", "labs", "scans"]),
   lat: z.number().min(-90).max(90),
   lng: z.number().min(-180).max(180),
   radiusMeters: z.number().min(500).max(30000).optional(),
@@ -132,9 +141,11 @@ export const searchNearbyPlaces = createServerFn({ method: "POST" })
     const center = { latitude: data.lat, longitude: data.lng };
     const includedTypes = KIND_TYPES[data.kind];
 
-    const result = data.query
+    const useText = Boolean(data.query) || data.kind === "scans";
+
+    const result = useText
       ? await callGateway("/places/v1/places:searchText", {
-          textQuery: `${data.query} ${data.kind === "labs" ? "diagnostic lab" : data.kind === "pharmacies" ? "pharmacy" : "hospital"}`,
+          textQuery: `${data.query ?? ""} ${KIND_TEXT[data.kind]}`.trim(),
           maxResultCount: 20,
           locationBias: { circle: { center, radius } },
         })
