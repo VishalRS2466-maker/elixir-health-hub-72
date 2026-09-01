@@ -223,6 +223,11 @@ function Card({
         >
           <MapPin className="h-4 w-4" /> Directions
         </a>
+        {actionTo && actionLabel && (
+          <Link to={actionTo} className="inline-flex items-center gap-1">
+            <CalendarPlus className="h-4 w-4" /> {actionLabel}
+          </Link>
+        )}
       </div>
     </article>
   );
