@@ -6,10 +6,12 @@ import {
   HeartPulse,
   Pencil,
   Plus,
+  ScanLine,
   Search,
   Sparkles,
   Trash2,
 } from "lucide-react";
+
 import { toast } from "sonner";
 import { useSession } from "@/hooks/useSession";
 import * as MedicalRecordService from "@/services/records";
@@ -99,15 +101,34 @@ function RecordsPage() {
           <h1 className="text-2xl font-semibold">Medical Records</h1>
           <p className="text-sm text-muted-foreground">Your complete health timeline, owned by you.</p>
         </div>
-        <Button className="rounded-2xl" onClick={() => setCreating(true)}>
-          <Plus className="mr-1 h-4 w-4" /> Add record
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild variant="outline" className="rounded-2xl">
+            <Link to="/app/records/scan">
+              <ScanLine className="mr-1 h-4 w-4" /> Scan document
+            </Link>
+          </Button>
+          <Button className="rounded-2xl" onClick={() => setCreating(true)}>
+            <Plus className="mr-1 h-4 w-4" /> Add record
+          </Button>
+        </div>
+
       </div>
+
+      <Link to="/app/records/scan" className="card-soft flex items-center gap-3 bg-brand-soft p-4">
+        <ScanLine className="h-6 w-6 text-primary" />
+        <div className="flex-1">
+          <p className="font-semibold">Scan Prescription / Report</p>
+          <p className="text-xs text-muted-foreground">
+            Photograph a document — ELIXIR reads it, you review and confirm before it is saved
+          </p>
+        </div>
+      </Link>
 
       <Link
         to="/app/records/emergency-card"
         className="card-soft flex items-center gap-3 bg-emergency-soft p-4"
       >
+
         <HeartPulse className="h-6 w-6 text-emergency" />
         <div className="flex-1">
           <p className="font-semibold">Emergency Medical Card</p>
