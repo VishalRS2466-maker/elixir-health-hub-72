@@ -172,7 +172,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         onClick={() => setNavOpen(false)}
         aria-hidden={!navOpen}
         className={cn(
-          "fixed inset-0 z-40 bg-foreground/40 backdrop-blur-[2px] transition-opacity duration-300",
+          "fixed inset-0 z-40 bg-foreground/40 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden",
           navOpen ? "opacity-100" : "pointer-events-none opacity-0",
         )}
       />
@@ -181,10 +181,9 @@ export function AppShell({ children }: { children: ReactNode }) {
       <aside
         id="app-sidebar"
         aria-label={t("nav.menu")}
-        aria-hidden={!navOpen}
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-[280px] max-w-[85vw] flex-col border-r bg-card shadow-lift",
-          "transition-transform duration-300 ease-out",
+          "fixed inset-y-0 left-0 z-50 flex w-[264px] max-w-[85vw] flex-col border-r bg-card shadow-lift",
+          "transition-transform duration-300 ease-out lg:z-30 lg:w-[248px] lg:translate-x-0 lg:shadow-none xl:w-[264px]",
           navOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
@@ -201,6 +200,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             variant="ghost"
             size="icon"
             aria-label={t("nav.closeMenu")}
+            className="lg:hidden"
             onClick={() => setNavOpen(false)}
           >
             <X className="h-5 w-5" />
@@ -232,7 +232,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
-      <div>
+      <div className="lg:pl-[248px] xl:pl-[264px]">
         <header className="sticky top-0 z-30 flex items-center gap-2 border-b bg-card/95 px-3 py-2.5 backdrop-blur sm:px-4">
           <Button
             variant="ghost"
@@ -240,7 +240,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             aria-label={t("nav.openMenu")}
             aria-expanded={navOpen}
             aria-controls="app-sidebar"
-            className="min-h-11 min-w-11"
+            className="min-h-11 min-w-11 lg:hidden"
             onClick={() => setNavOpen(true)}
           >
             <Menu className="h-5 w-5" />
@@ -324,12 +324,14 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-5xl px-4 pb-28 pt-6 md:pb-12">{children}</main>
+        <main className="mx-auto w-full max-w-[1680px] px-4 pb-28 pt-5 sm:px-5 md:pb-10 md:pt-6 xl:px-8">
+          {children}
+        </main>
       </div>
 
       <nav
         aria-label={t("nav.groupMain")}
-        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t bg-card px-1 py-1.5 md:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t bg-card px-1 py-1.5 lg:hidden"
       >
         {bottomNav.map((item) => (
           <Link
