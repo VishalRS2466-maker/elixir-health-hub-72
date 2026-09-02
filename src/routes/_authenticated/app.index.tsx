@@ -113,7 +113,7 @@ function HomePage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-2xl space-y-6">
+    <div className="mx-auto w-full max-w-5xl space-y-5">
       {/* Header: greeting, ID, compact SOS */}
       <div className="flex items-start justify-between gap-3">
         <div>
