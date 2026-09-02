@@ -50,7 +50,7 @@ function AdminPage() {
       <div>
         <h1 className="text-2xl font-semibold">Admin dashboard</h1>
         <p className="text-sm text-muted-foreground">
-          Administrators never see patient medical records — only accounts, providers and audit metadata.
+          Administrators never see user medical records — only accounts, providers and audit metadata.
         </p>
       </div>
 

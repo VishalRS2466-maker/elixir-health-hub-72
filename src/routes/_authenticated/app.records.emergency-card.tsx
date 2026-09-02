@@ -27,7 +27,7 @@ export const Route = createFileRoute("/_authenticated/app/records/emergency-card
 
 const FIELDS = [
   { key: "name", label: "Name" },
-  { key: "universal_id", label: "Universal Patient ID" },
+  { key: "universal_id", label: "Universal User ID" },
   { key: "abha_id", label: "ABHA ID" },
   { key: "blood_group", label: "Blood group" },
   { key: "allergies", label: "Allergies" },
@@ -72,7 +72,7 @@ function EmergencyCardPage() {
 
   const shareText = [
     visible.includes("name") ? `Name: ${profile?.full_name}` : null,
-    visible.includes("universal_id") ? `Patient ID: ${profile?.universal_id}` : null,
+    visible.includes("universal_id") ? `User ID: ${profile?.universal_id}` : null,
     visible.includes("abha_id") && profile?.abha_id ? `ABHA: ${profile.abha_id}` : null,
     visible.includes("blood_group") ? `Blood group: ${data?.blood_group ?? "-"}` : null,
     visible.includes("allergies") ? `Allergies: ${(data?.allergies ?? []).join(", ") || "None"}` : null,

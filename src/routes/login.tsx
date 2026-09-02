@@ -16,7 +16,7 @@ export const Route = createFileRoute("/login")({
       { title: "Login — ELIXIR" },
       {
         name: "description",
-        content: "Sign in to ELIXIR to access your connected health profile as a patient, doctor or admin.",
+        content: "Sign in to ELIXIR to access your connected health profile as a user, doctor or admin.",
       },
       { property: "og:title", content: "Login — ELIXIR" },
       { property: "og:description", content: "Sign in to your ELIXIR healthcare account." },
@@ -94,7 +94,7 @@ function LoginPage() {
         const roles = await AuthService.getRoles(data.user.id);
         if (roles.length === 0) {
           await AuthService.bootstrapAccount({
-            fullName: data.user.user_metadata["full_name"] ?? "Patient",
+            fullName: data.user.user_metadata["full_name"] ?? "User",
             email: form.email,
             role: "patient",
           });

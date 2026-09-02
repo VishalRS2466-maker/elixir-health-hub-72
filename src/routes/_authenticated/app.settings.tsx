@@ -81,7 +81,7 @@ function SettingsPage() {
               <dl className="mt-4 grid gap-4 sm:grid-cols-2">
                 <Row label="Name" value={profile?.full_name ?? "—"} />
                 <Row label="Email" value={user?.email ?? "—"} />
-                <Row label="Universal Patient ID" value={profile?.universal_id ?? "—"} />
+                <Row label="Universal User ID" value={profile?.universal_id ?? "—"} />
                 <Row label="ABHA ID" value={profile?.abha_id ?? "Not linked"} />
                 <Row label="Role" value={role} />
                 <Row label="Phone" value={profile?.phone ?? "—"} />

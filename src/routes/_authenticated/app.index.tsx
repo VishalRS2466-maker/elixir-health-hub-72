@@ -33,7 +33,7 @@ export const Route = createFileRoute("/_authenticated/app/")({
   head: () => ({
     meta: [
       { title: "Home · ELIXIR" },
-      { name: "description", content: "Your patient ID, medicine reminders, appointments and records at a glance." },
+      { name: "description", content: "Your user ID, medicine reminders, appointments and records at a glance." },
       { property: "og:title", content: "Home · ELIXIR" },
       { property: "og:description", content: "Your connected health dashboard." },
     ],
@@ -126,7 +126,7 @@ function HomePage() {
     if (!user) return;
     await AuditService.log({
       actorId: user.id,
-      actorName: profile?.full_name ?? "Patient",
+      actorName: profile?.full_name ?? "User",
       actorRole: "patient",
       patientId: user.id,
       action,
@@ -159,7 +159,7 @@ function HomePage() {
             Hello, {profile?.full_name?.split(" ")[0] ?? "there"}
           </h1>
           <p className="mt-0.5 text-sm text-muted-foreground">
-            Patient ID:{" "}
+            User ID:{" "}
             <Link to="/app/profile" className="font-mono font-medium text-foreground hover:underline">
               {profile?.universal_id ?? "—"}
             </Link>

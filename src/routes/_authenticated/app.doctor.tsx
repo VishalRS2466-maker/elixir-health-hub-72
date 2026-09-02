@@ -21,9 +21,9 @@ export const Route = createFileRoute("/_authenticated/app/doctor")({
   head: () => ({
     meta: [
       { title: "Doctor dashboard · ELIXIR" },
-      { name: "description", content: "Appointments, consent requests and consented patient records." },
+      { name: "description", content: "Appointments, consent requests and consented user records." },
       { property: "og:title", content: "Doctor dashboard · ELIXIR" },
-      { property: "og:description", content: "Access patient records only with explicit, time-limited consent." },
+      { property: "og:description", content: "Access user records only with explicit, time-limited consent." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -125,16 +125,16 @@ function DoctorPage() {
       <div>
         <h1 className="text-2xl font-semibold">Doctor dashboard</h1>
         <p className="text-sm text-muted-foreground">
-          {doctor.data?.specialty ?? "Clinician"} · You can only open records a patient has approved.
+          {doctor.data?.specialty ?? "Clinician"} · You can only open records a user has approved.
         </p>
       </div>
 
       <section className="card-soft space-y-3 p-5">
-        <h2 className="text-lg font-semibold">Request patient records</h2>
+        <h2 className="text-lg font-semibold">Request user records</h2>
         <div className="flex flex-wrap gap-2">
           <Input
             className="min-w-52 flex-1"
-            placeholder="Universal Patient ID (e.g. ELX-2024-000123)"
+            placeholder="Universal User ID (e.g. ELX-2024-000123)"
             value={lookup}
             onChange={(e) => setLookup(e.target.value)}
           />
@@ -142,7 +142,7 @@ function DoctorPage() {
             <Search className="mr-1 h-4 w-4" /> Find
           </Button>
         </div>
-        {notFound && <p className="text-sm text-muted-foreground">No patient found with that ID.</p>}
+        {notFound && <p className="text-sm text-muted-foreground">No user found with that ID.</p>}
         {found && (
           <div className="space-y-3 rounded-2xl bg-muted p-4">
             <p className="font-semibold">
@@ -175,7 +175,7 @@ function DoctorPage() {
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">Consent requests</h2>
         {(requests.data ?? []).length === 0 && (
-          <EmptyState icon={FileHeart} title="No requests yet" description="Look up a patient ID above to request access." />
+          <EmptyState icon={FileHeart} title="No requests yet" description="Look up a user ID above to request access." />
         )}
         {(requests.data ?? []).map((r) => (
           <article key={r.id} className="card-soft p-4">
@@ -242,7 +242,7 @@ function DoctorPage() {
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">Appointments</h2>
         {(appointments.data ?? []).length === 0 && (
-          <EmptyState icon={CalendarDays} title="No appointments" description="Patient bookings for you will appear here." />
+          <EmptyState icon={CalendarDays} title="No appointments" description="User bookings for you will appear here." />
         )}
         {(appointments.data ?? []).map((a) => (
           <article key={a.id} className="card-soft flex flex-wrap items-center justify-between gap-3 p-4">

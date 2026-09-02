@@ -79,7 +79,7 @@ export function FacilityBookingDialog({
       });
       await AuditService.log({
         actorId: user.id,
-        actorName: profile?.full_name ?? "Patient",
+        actorName: profile?.full_name ?? "User",
         actorRole: "patient",
         patientId: user.id,
         action: kind === "test" ? "Booked lab test" : "Booked scan",

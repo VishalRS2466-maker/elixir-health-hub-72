@@ -97,7 +97,7 @@ const STEPS = [
 ];
 
 const FLOW = [
-  "Patient",
+  "User",
   "Health Profile",
   "Medical Records",
   "Healthcare Services",
@@ -108,7 +108,7 @@ const FLOW = [
 const SECURITY = [
   { icon: KeyRound, title: "Secure authentication", text: "Accounts are protected by email and password sign-in." },
   { icon: UserCheck, title: "Consent-based access", text: "Doctors see records only after you approve access." },
-  { icon: ShieldCheck, title: "Role-based access", text: "Patients, doctors and admins each see only what they need." },
+  { icon: ShieldCheck, title: "Role-based access", text: "Users, doctors and admins each see only what they need." },
   { icon: Lock, title: "Protected information", text: "Health information is stored behind access rules." },
   { icon: History, title: "Access history", text: "See a record of who viewed your information and when." },
 ];
@@ -193,7 +193,7 @@ function Landing() {
               <div className="absolute inset-6 -z-10 rounded-[3rem] bg-brand-soft" />
               <img
                 src={heroIllustration}
-                alt="Illustration of a patient, doctor, hospital, medical record and AI assistant connected together"
+                alt="Illustration of a user, doctor, hospital, medical record and AI assistant connected together"
                 width={1024}
                 height={1024}
                 className="mx-auto w-full max-w-md"
