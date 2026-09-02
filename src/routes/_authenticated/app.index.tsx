@@ -255,6 +255,18 @@ function HomePage() {
               ELIXIR only records what you confirm here — it cannot detect whether a medicine was taken.
             </p>
           </>
+        ) : todaySchedule.length > 0 ? (
+          <div className="flex items-center gap-3">
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sage-soft">
+              <Pill className="h-6 w-6 text-primary" />
+            </span>
+            <div>
+              <h2 className="text-lg font-bold">All done for today</h2>
+              <p className="text-xs text-muted-foreground">
+                You've acted on every medicine scheduled for today.
+              </p>
+            </div>
+          </div>
         ) : (
           <EmptyState
             icon={Pill}
