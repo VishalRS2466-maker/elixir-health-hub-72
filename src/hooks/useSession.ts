@@ -38,11 +38,15 @@ export function useSession() {
     queryKey: ["roles", user?.id],
     queryFn: () => AuthService.getRoles(),
     enabled: !!user,
-    staleTime: 0,
+    staleTime: 5 * 60_000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   const roleList = roles.data ?? [];
-  const roleLoading = loading || !user || roles.isPending || roles.isFetching;
+  // Only the very first resolution gates the UI — background refetches must not
+  // unmount the shell (that caused the dashboard to flash/blink).
+  const roleLoading = loading || !user || (roles.isPending && roles.fetchStatus !== "idle");
   // Never default to "patient": the role stays null until the server confirms it.
   const role = roleLoading
     ? null
