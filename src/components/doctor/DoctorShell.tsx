@@ -26,11 +26,12 @@ const NAV = [
   { to: "/doctor/requests", label: "Patient Requests", icon: FileHeart },
   { to: "/doctor/consent", label: "Consent", icon: ShieldCheck },
   { to: "/doctor/ai", label: "AI Clinical Assistant", icon: Bot },
+  { to: "/doctor/notifications", label: "Notifications", icon: Bell },
 ];
 
 const SECONDARY = [
-  { to: "/app/profile", label: "Profile", icon: UserRound },
-  { to: "/app/settings", label: "Security & Settings", icon: Settings },
+  { to: "/doctor/profile", label: "Doctor Profile", icon: UserRound },
+  { to: "/doctor/settings", label: "Security & Settings", icon: Settings },
 ];
 
 export function DoctorShell({ children }: { children: ReactNode }) {

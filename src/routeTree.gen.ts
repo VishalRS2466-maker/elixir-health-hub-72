@@ -36,6 +36,7 @@ import { Route as AuthenticatedDoctorConsentRouteImport } from './routes/_authen
 import { Route as AuthenticatedDoctorPatientsRouteImport } from './routes/_authenticated/doctor.patients'
 import { Route as AuthenticatedDoctorProfileRouteImport } from './routes/_authenticated/doctor.profile'
 import { Route as AuthenticatedDoctorRequestsRouteImport } from './routes/_authenticated/doctor.requests'
+import { Route as AuthenticatedDoctorSettingsRouteImport } from './routes/_authenticated/doctor.settings'
 import { Route as AuthenticatedAppAdminIndexRouteImport } from './routes/_authenticated/app.admin.index'
 import { Route as AuthenticatedAppAdminDirectoryRouteImport } from './routes/_authenticated/app.admin.directory'
 import { Route as AuthenticatedAppRecordsIndexRouteImport } from './routes/_authenticated/app.records.index'
@@ -190,6 +191,12 @@ const AuthenticatedDoctorRequestsRoute =
     path: '/requests',
     getParentRoute: () => AuthenticatedDoctorRoute,
   } as any)
+const AuthenticatedDoctorSettingsRoute =
+  AuthenticatedDoctorSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedDoctorRoute,
+  } as any)
 const AuthenticatedAppAdminIndexRoute =
   AuthenticatedAppAdminIndexRouteImport.update({
     id: '/admin/',
@@ -258,6 +265,7 @@ export interface FileRoutesByFullPath {
   '/doctor/patients': typeof AuthenticatedDoctorPatientsRouteWithChildren
   '/doctor/profile': typeof AuthenticatedDoctorProfileRoute
   '/doctor/requests': typeof AuthenticatedDoctorRequestsRoute
+  '/doctor/settings': typeof AuthenticatedDoctorSettingsRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/doctor/': typeof AuthenticatedDoctorIndexRoute
   '/app/admin/directory': typeof AuthenticatedAppAdminDirectoryRoute
@@ -289,6 +297,7 @@ export interface FileRoutesByTo {
   '/doctor/consent': typeof AuthenticatedDoctorConsentRoute
   '/doctor/profile': typeof AuthenticatedDoctorProfileRoute
   '/doctor/requests': typeof AuthenticatedDoctorRequestsRoute
+  '/doctor/settings': typeof AuthenticatedDoctorSettingsRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/doctor': typeof AuthenticatedDoctorIndexRoute
   '/app/admin/directory': typeof AuthenticatedAppAdminDirectoryRoute
@@ -326,6 +335,7 @@ export interface FileRoutesById {
   '/_authenticated/doctor/patients': typeof AuthenticatedDoctorPatientsRouteWithChildren
   '/_authenticated/doctor/profile': typeof AuthenticatedDoctorProfileRoute
   '/_authenticated/doctor/requests': typeof AuthenticatedDoctorRequestsRoute
+  '/_authenticated/doctor/settings': typeof AuthenticatedDoctorSettingsRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/doctor/': typeof AuthenticatedDoctorIndexRoute
   '/_authenticated/app/admin/directory': typeof AuthenticatedAppAdminDirectoryRoute
@@ -363,6 +373,7 @@ export interface FileRouteTypes {
     | '/doctor/patients'
     | '/doctor/profile'
     | '/doctor/requests'
+    | '/doctor/settings'
     | '/app/'
     | '/doctor/'
     | '/app/admin/directory'
@@ -394,6 +405,7 @@ export interface FileRouteTypes {
     | '/doctor/consent'
     | '/doctor/profile'
     | '/doctor/requests'
+    | '/doctor/settings'
     | '/app'
     | '/doctor'
     | '/app/admin/directory'
@@ -430,6 +442,7 @@ export interface FileRouteTypes {
     | '/_authenticated/doctor/patients'
     | '/_authenticated/doctor/profile'
     | '/_authenticated/doctor/requests'
+    | '/_authenticated/doctor/settings'
     | '/_authenticated/app/'
     | '/_authenticated/doctor/'
     | '/_authenticated/app/admin/directory'
@@ -641,6 +654,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDoctorRequestsRouteImport
       parentRoute: typeof AuthenticatedDoctorRoute
     }
+    '/_authenticated/doctor/settings': {
+      id: '/_authenticated/doctor/settings'
+      path: '/settings'
+      fullPath: '/doctor/settings'
+      preLoaderRoute: typeof AuthenticatedDoctorSettingsRouteImport
+      parentRoute: typeof AuthenticatedDoctorRoute
+    }
     '/_authenticated/app/admin/': {
       id: '/_authenticated/app/admin/'
       path: '/admin'
@@ -774,6 +794,7 @@ interface AuthenticatedDoctorRouteChildren {
   AuthenticatedDoctorPatientsRoute: typeof AuthenticatedDoctorPatientsRouteWithChildren
   AuthenticatedDoctorProfileRoute: typeof AuthenticatedDoctorProfileRoute
   AuthenticatedDoctorRequestsRoute: typeof AuthenticatedDoctorRequestsRoute
+  AuthenticatedDoctorSettingsRoute: typeof AuthenticatedDoctorSettingsRoute
   AuthenticatedDoctorIndexRoute: typeof AuthenticatedDoctorIndexRoute
 }
 
@@ -785,6 +806,7 @@ const AuthenticatedDoctorRouteChildren: AuthenticatedDoctorRouteChildren = {
     AuthenticatedDoctorPatientsRouteWithChildren,
   AuthenticatedDoctorProfileRoute: AuthenticatedDoctorProfileRoute,
   AuthenticatedDoctorRequestsRoute: AuthenticatedDoctorRequestsRoute,
+  AuthenticatedDoctorSettingsRoute: AuthenticatedDoctorSettingsRoute,
   AuthenticatedDoctorIndexRoute: AuthenticatedDoctorIndexRoute,
 }
 
