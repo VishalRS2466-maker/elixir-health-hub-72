@@ -135,8 +135,15 @@ function HomePage() {
     });
   }
 
-  async function act(id: string, status: "taken" | "skipped" | "snoozed") {
-    await ReminderService.setReminderStatus(id, status);
+  async function act(entry: (typeof todaySchedule)[number], status: "taken" | "skipped" | "snoozed") {
+    if (!user) return;
+    if (entry.log) {
+      await ReminderService.setReminderStatus(entry.log.id, status);
+    } else if (status !== "snoozed") {
+      await ReminderService.markAdhoc(entry.medicine.id, user.id, entry.at, status);
+    } else {
+      return;
+    }
     await qc.invalidateQueries({ queryKey: ["reminders", user?.id] });
     toast.success(
       status === "taken" ? "Marked as taken" : status === "skipped" ? "Marked as skipped" : "Snoozed for 15 minutes",
