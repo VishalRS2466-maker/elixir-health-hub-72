@@ -60,6 +60,8 @@ export type TranslationKey = keyof typeof en;
 
 const ta: Record<TranslationKey, string> = {
   "nav.dashboard": "முகப்பு",
+  "nav.assistant": "AI உதவியாளர்",
+  "nav.doctorPortal": "மருத்துவர் போர்டல்",
   "nav.records": "மருத்துவ பதிவுகள்",
   "nav.profile": "மருத்துவ சுயவிவரம்",
   "nav.hospital": "சந்திப்புகள்",
@@ -102,6 +104,8 @@ const ta: Record<TranslationKey, string> = {
 
 const hi: Record<TranslationKey, string> = {
   "nav.dashboard": "डैशबोर्ड",
+  "nav.assistant": "AI सहायक",
+  "nav.doctorPortal": "डॉक्टर पोर्टल",
   "nav.records": "मेडिकल रिकॉर्ड",
   "nav.profile": "मेडिकल प्रोफ़ाइल",
   "nav.hospital": "अपॉइंटमेंट",
@@ -144,6 +148,8 @@ const hi: Record<TranslationKey, string> = {
 
 const mr: Record<TranslationKey, string> = {
   "nav.dashboard": "डॅशबोर्ड",
+  "nav.assistant": "AI सहाय्यक",
+  "nav.doctorPortal": "डॉक्टर पोर्टल",
   "nav.records": "वैद्यकीय नोंदी",
   "nav.profile": "वैद्यकीय प्रोफाइल",
   "nav.hospital": "अपॉइंटमेंट",
