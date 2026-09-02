@@ -14,6 +14,8 @@ const STORAGE_KEY = "elixir.language";
 /** Translation keys are grouped by feature with dot notation. */
 const en = {
   "nav.dashboard": "Dashboard",
+  "nav.assistant": "AI Assistant",
+  "nav.doctorPortal": "Doctor Portal",
   "nav.records": "Medical Records",
   "nav.profile": "Medical Profile",
   "nav.hospital": "Appointments",

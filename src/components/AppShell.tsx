@@ -14,6 +14,7 @@ import {
   Menu,
   Pill,
   Settings,
+  Sparkles,
   ShieldCheck,
   Stethoscope,
   UserRound,
@@ -33,6 +34,7 @@ type NavGroup = { titleKey: TranslationKey; items: NavItem[] };
 const PATIENT_MAIN: NavItem[] = [
   { to: "/app", labelKey: "nav.dashboard", icon: Home },
   { to: "/app/records", labelKey: "nav.records", icon: FileHeart },
+  { to: "/app/assistant", labelKey: "nav.assistant", icon: Sparkles },
   { to: "/app/hospital", labelKey: "nav.hospital", icon: Building2 },
   { to: "/app/explore", labelKey: "nav.explore", icon: Compass },
   { to: "/app/profile", labelKey: "nav.profile", icon: UserRound },
@@ -61,7 +63,8 @@ const DOCTOR_GROUPS: NavGroup[] = [
   {
     titleKey: "nav.groupMain",
     items: [
-      { to: "/app/doctor", labelKey: "nav.doctor", icon: Stethoscope },
+      { to: "/doctor", labelKey: "nav.doctorPortal", icon: Stethoscope },
+      { to: "/app/doctor", labelKey: "nav.doctor", icon: ClipboardList },
       { to: "/app/explore", labelKey: "nav.explore", icon: Compass },
       { to: "/app/first-aid", labelKey: "nav.firstAid", icon: LifeBuoy },
     ],
