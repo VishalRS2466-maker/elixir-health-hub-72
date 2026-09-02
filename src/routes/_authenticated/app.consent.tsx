@@ -10,6 +10,8 @@ import { CONSENT_CATEGORIES, categoryLabel } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { EmptyState, StatusChip } from "@/components/EmptyState";
+import { useSecurity } from "@/components/security/SecurityProvider";
+import { secureConsentDecision } from "@/lib/webauthn.functions";
 
 export const Route = createFileRoute("/_authenticated/app/consent")({
   head: () => ({
@@ -28,6 +30,7 @@ function ConsentPage() {
   const qc = useQueryClient();
   const [selection, setSelection] = useState<Record<string, string[]>>({});
   const [duration, setDuration] = useState<Record<string, number>>({});
+  const { requireAuth } = useSecurity();
 
   const requests = useQuery({
     queryKey: ["consent", user?.id],
@@ -45,7 +48,17 @@ function ConsentPage() {
       toast.error("Select at least one category to approve");
       return;
     }
-    await ConsentService.respond(id, status, chosen, days);
+    const verified = await requireAuth({
+      level: "sensitive",
+      reason:
+        status === "approved"
+          ? `You are about to give ${doctorName} access to ${chosen.map(categoryLabel).join(", ")}.`
+          : `Confirm that you want to reject the request from ${doctorName}.`,
+    });
+    if (!verified) return;
+    await secureConsentDecision({
+      data: { id, status, approvedCategories: chosen, durationDays: days },
+    });
     if (user)
       await AuditService.log({
         actorId: user.id,
@@ -175,7 +188,14 @@ function ConsentPage() {
                 size="sm"
                 className="mt-3 rounded-full"
                 onClick={async () => {
-                  await ConsentService.revoke(r.id);
+                  const verified = await requireAuth({
+                    level: "sensitive",
+                    reason: `You are about to revoke ${r.doctor_name}'s access to your medical records.`,
+                  });
+                  if (!verified) return;
+                  await secureConsentDecision({
+                    data: { id: r.id, status: "revoked", approvedCategories: [], durationDays: 30 },
+                  });
                   if (user)
                     await AuditService.log({
                       actorId: user.id,
