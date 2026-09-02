@@ -104,7 +104,19 @@ function HomePage() {
     const now = new Date();
     return d.toDateString() === now.toDateString();
   });
-  const nextReminder = (reminders.data ?? []).find((r) => r.status === "upcoming");
+
+  // Every medicine being taken today, merged with today's log (if any)
+  const todaySchedule = (medicines.data ?? [])
+    .map((m) => {
+      const log = todayReminders.find((l) => l.medicine_id === m.id) ?? null;
+      const at = log ? new Date(log.scheduled_at) : ReminderService.todayAt(m.reminder_time);
+      return { medicine: m, log, at };
+    })
+    .sort((a, b) => a.at.getTime() - b.at.getTime());
+
+  const pendingDoses = todaySchedule.filter((e) => !e.log || e.log.status === "upcoming");
+  const nextDose =
+    pendingDoses.find((e) => e.at.getTime() >= Date.now()) ?? pendingDoses[0] ?? null;
   const upcomingAppointments = (appointments.data ?? [])
     .filter((a) => new Date(a.slot_at) > new Date() && a.status !== "cancelled")
     .slice(0, 2);
