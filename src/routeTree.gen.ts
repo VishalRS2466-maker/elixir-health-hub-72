@@ -31,6 +31,7 @@ import { Route as AuthenticatedAppAdminIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedAppAdminDirectoryRouteImport } from './routes/_authenticated/app.admin.directory'
 import { Route as AuthenticatedAppRecordsIndexRouteImport } from './routes/_authenticated/app.records.index'
 import { Route as AuthenticatedAppRecordsEmergencyCardRouteImport } from './routes/_authenticated/app.records.emergency-card'
+import { Route as AuthenticatedAppRecordsScanRouteImport } from './routes/_authenticated/app.records.scan'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -150,6 +151,12 @@ const AuthenticatedAppRecordsEmergencyCardRoute =
     path: '/emergency-card',
     getParentRoute: () => AuthenticatedAppRecordsRoute,
   } as any)
+const AuthenticatedAppRecordsScanRoute =
+  AuthenticatedAppRecordsScanRouteImport.update({
+    id: '/scan',
+    path: '/scan',
+    getParentRoute: () => AuthenticatedAppRecordsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -171,6 +178,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/admin/directory': typeof AuthenticatedAppAdminDirectoryRoute
   '/app/records/emergency-card': typeof AuthenticatedAppRecordsEmergencyCardRoute
+  '/app/records/scan': typeof AuthenticatedAppRecordsScanRoute
   '/app/admin/': typeof AuthenticatedAppAdminIndexRoute
   '/app/records/': typeof AuthenticatedAppRecordsIndexRoute
 }
@@ -192,6 +200,7 @@ export interface FileRoutesByTo {
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/admin/directory': typeof AuthenticatedAppAdminDirectoryRoute
   '/app/records/emergency-card': typeof AuthenticatedAppRecordsEmergencyCardRoute
+  '/app/records/scan': typeof AuthenticatedAppRecordsScanRoute
   '/app/admin': typeof AuthenticatedAppAdminIndexRoute
   '/app/records': typeof AuthenticatedAppRecordsIndexRoute
 }
@@ -217,6 +226,7 @@ export interface FileRoutesById {
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/admin/directory': typeof AuthenticatedAppAdminDirectoryRoute
   '/_authenticated/app/records/emergency-card': typeof AuthenticatedAppRecordsEmergencyCardRoute
+  '/_authenticated/app/records/scan': typeof AuthenticatedAppRecordsScanRoute
   '/_authenticated/app/admin/': typeof AuthenticatedAppAdminIndexRoute
   '/_authenticated/app/records/': typeof AuthenticatedAppRecordsIndexRoute
 }
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/admin/directory'
     | '/app/records/emergency-card'
+    | '/app/records/scan'
     | '/app/admin/'
     | '/app/records/'
   fileRoutesByTo: FileRoutesByTo
@@ -263,6 +274,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/app/admin/directory'
     | '/app/records/emergency-card'
+    | '/app/records/scan'
     | '/app/admin'
     | '/app/records'
   id:
@@ -287,6 +299,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/'
     | '/_authenticated/app/admin/directory'
     | '/_authenticated/app/records/emergency-card'
+    | '/_authenticated/app/records/scan'
     | '/_authenticated/app/admin/'
     | '/_authenticated/app/records/'
   fileRoutesById: FileRoutesById
@@ -456,11 +469,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppRecordsEmergencyCardRouteImport
       parentRoute: typeof AuthenticatedAppRecordsRoute
     }
+    '/_authenticated/app/records/scan': {
+      id: '/_authenticated/app/records/scan'
+      path: '/scan'
+      fullPath: '/app/records/scan'
+      preLoaderRoute: typeof AuthenticatedAppRecordsScanRouteImport
+      parentRoute: typeof AuthenticatedAppRecordsRoute
+    }
   }
 }
 
 interface AuthenticatedAppRecordsRouteChildren {
   AuthenticatedAppRecordsEmergencyCardRoute: typeof AuthenticatedAppRecordsEmergencyCardRoute
+  AuthenticatedAppRecordsScanRoute: typeof AuthenticatedAppRecordsScanRoute
   AuthenticatedAppRecordsIndexRoute: typeof AuthenticatedAppRecordsIndexRoute
 }
 
@@ -468,6 +489,7 @@ const AuthenticatedAppRecordsRouteChildren: AuthenticatedAppRecordsRouteChildren
   {
     AuthenticatedAppRecordsEmergencyCardRoute:
       AuthenticatedAppRecordsEmergencyCardRoute,
+    AuthenticatedAppRecordsScanRoute: AuthenticatedAppRecordsScanRoute,
     AuthenticatedAppRecordsIndexRoute: AuthenticatedAppRecordsIndexRoute,
   }
 

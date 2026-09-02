@@ -579,7 +579,7 @@ function ReviewForm({
         />
       </div>
 
-      <div className="sticky bottom-4 flex flex-wrap gap-3 rounded-2xl bg-card/95 p-3 shadow-lift backdropblur">
+      <div className="sticky bottom-4 flex flex-wrap gap-3 rounded-2xl bg-card/95 p-3 shadow-lift backdrop-blur">
         <Button className="flex-1 rounded-2xl" onClick={onConfirm} disabled={saving}>
           {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle2 className="mr-2 h-4 w-4" />}
           Confirm &amp; add to records
