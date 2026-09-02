@@ -12,11 +12,14 @@ import {
   Pill,
   Sparkles,
   Stethoscope,
+  ShieldAlert,
+  Clock,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useSession } from "@/hooks/useSession";
 import * as ReminderService from "@/services/reminders";
 import * as BookingService from "@/services/bookings";
+import * as ConsentService from "@/services/consent";
 import * as MedicalRecordService from "@/services/records";
 import * as EmergencyService from "@/services/emergency";
 import * as AuditService from "@/services/audit";
@@ -84,7 +87,18 @@ function HomePage() {
     queryFn: () => EmergencyService.listContacts(user!.id),
     enabled: !!user,
   });
+  const consent = useQuery({
+    queryKey: ["consent-requests", user?.id],
+    queryFn: () => ConsentService.listPatientRequests(user!.id),
+    enabled: !!user,
+  });
 
+  const pendingConsent = (consent.data ?? []).filter((r) => r.status === "pending");
+  const todayReminders = (reminders.data ?? []).filter((r) => {
+    const d = new Date(r.scheduled_at);
+    const now = new Date();
+    return d.toDateString() === now.toDateString();
+  });
   const nextReminder = (reminders.data ?? []).find((r) => r.status === "upcoming");
   const upcomingAppointments = (appointments.data ?? [])
     .filter((a) => new Date(a.slot_at) > new Date() && a.status !== "cancelled")
