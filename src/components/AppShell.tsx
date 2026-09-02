@@ -248,7 +248,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             aria-label="ELIXIR — Home"
             className="pointer-events-auto absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md px-3 py-1.5 text-lg font-semibold tracking-[0.18em] text-foreground transition-all duration-200 hover:scale-[1.03] hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:text-xl"
           >
-            <span className="max-w-[38vw] truncate sm:max-w-none">ELIXIR</span>
+            <span className="block max-w-[38vw] truncate sm:max-w-none">ELIXIR</span>
           </Link>
           <div className="ml-auto flex items-center gap-2">
             <div className="relative">
