@@ -233,7 +233,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </aside>
 
       <div>
-        <header className="relative sticky top-0 z-30 flex items-center gap-2 border-b bg-card/95 px-3 py-2.5 backdrop-blur sm:px-4">
+        <header className="sticky top-0 z-30 flex items-center gap-2 border-b bg-card/95 px-3 py-2.5 backdrop-blur sm:px-4">
           <Button
             variant="ghost"
             size="icon"
