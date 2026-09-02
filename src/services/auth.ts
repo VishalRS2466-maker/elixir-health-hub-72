@@ -22,7 +22,7 @@ export async function signUp(opts: {
     password: opts.password,
     options: {
       emailRedirectTo: window.location.origin,
-      data: { full_name: opts.fullName },
+      data: { full_name: opts.fullName, requested_role: opts.role === "doctor" ? "doctor" : "patient", specialty: opts.specialty ?? null },
     },
   });
   if (error) throw error;

@@ -54,10 +54,13 @@ export const provisionMyAccount = createServerFn({ method: "POST" })
     const current = ((existingRoles ?? []) as { role: AppRole }[]).map((r) => r.role);
     if (current.length > 0) return { userId, roles: current, role: primary(current) };
 
-    // admin is never self-serviceable
-    const requested: AppRole = data.role === "doctor" ? "doctor" : "patient";
-
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // The requested role is read from the signup metadata stored on the auth user,
+    // never from the request body. `admin` is never self-serviceable.
+    const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(userId);
+    const signupRole = (authUser?.user?.user_metadata?.["requested_role"] as string | undefined) ?? "patient";
+    const requested: AppRole = signupRole === "doctor" ? "doctor" : "patient";
 
     const { data: profile } = await supabaseAdmin
       .from("profiles")
