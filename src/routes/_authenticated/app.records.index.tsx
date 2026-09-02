@@ -6,10 +6,12 @@ import {
   HeartPulse,
   Pencil,
   Plus,
+  ScanLine,
   Search,
   Sparkles,
   Trash2,
 } from "lucide-react";
+
 import { toast } from "sonner";
 import { useSession } from "@/hooks/useSession";
 import * as MedicalRecordService from "@/services/records";
