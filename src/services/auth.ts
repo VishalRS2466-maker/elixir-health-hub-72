@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { getMyRole, provisionMyAccount } from "@/lib/roles.functions";
 
-export type AppRole = "patient" | "doctor" | "admin";
+export type AppRole = "user" | "doctor" | "admin";
 
 export async function signIn(email: string, password: string) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -22,7 +22,7 @@ export async function signUp(opts: {
     password: opts.password,
     options: {
       emailRedirectTo: window.location.origin,
-      data: { full_name: opts.fullName, requested_role: opts.role === "doctor" ? "doctor" : "patient", specialty: opts.specialty ?? null },
+      data: { full_name: opts.fullName, requested_role: opts.role === "doctor" ? "doctor" : "user", specialty: opts.specialty ?? null },
     },
   });
   if (error) throw error;

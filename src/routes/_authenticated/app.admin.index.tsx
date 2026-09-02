@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Activity, Building2, ClipboardList, Users } from "lucide-react";
 import { useSession } from "@/hooks/useSession";
-import * as PatientService from "@/services/patient";
+import * as PatientService from "@/services/user";
 import * as DirectoryService from "@/services/directory";
 import * as AuditService from "@/services/audit";
 import { EmptyState } from "@/components/EmptyState";

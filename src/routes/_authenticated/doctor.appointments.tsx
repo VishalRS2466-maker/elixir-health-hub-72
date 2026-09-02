@@ -26,7 +26,7 @@ function DoctorAppointments() {
       </div>
       {overview.isLoading && <div className="h-32 animate-pulse rounded-2xl bg-muted" />}
       {!overview.isLoading && appts.length === 0 && (
-        <EmptyState icon={CalendarDays} title="No appointments" description="Patient bookings will appear here." />
+        <EmptyState icon={CalendarDays} title="No appointments" description="User bookings will appear here." />
       )}
       {appts.map((a) => (
         <article key={a.id} className="card-soft flex flex-wrap items-center justify-between gap-3 p-4">

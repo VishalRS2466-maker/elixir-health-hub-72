@@ -63,7 +63,7 @@ function ConsentPage() {
       await AuditService.log({
         actorId: user.id,
         actorName: profile?.full_name ?? "User",
-        actorRole: "patient",
+        actorRole: "user",
         patientId: user.id,
         action: status === "approved" ? "Approved record access" : "Rejected record access",
         resource: status === "approved" ? chosen.map(categoryLabel).join(", ") : "None",
@@ -200,7 +200,7 @@ function ConsentPage() {
                     await AuditService.log({
                       actorId: user.id,
                       actorName: profile?.full_name ?? "User",
-                      actorRole: "patient",
+                      actorRole: "user",
                       patientId: user.id,
                       action: "Revoked record access",
                       resource: r.doctor_name,

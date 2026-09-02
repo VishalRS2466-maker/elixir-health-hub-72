@@ -83,9 +83,9 @@ function DoctorRequests() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-semibold">Patient requests</h1>
+        <h1 className="text-2xl font-semibold">User requests</h1>
         <p className="text-sm text-muted-foreground">
-          Records open only after the patient approves. Lookup shows nothing but the name and Universal ID.
+          Records open only after the user approves. Lookup shows nothing but the name and Universal ID.
         </p>
       </div>
 
@@ -160,7 +160,7 @@ function DoctorRequests() {
                     params={{ patientId: r.patient_id }}
                     className="text-sm font-medium text-primary"
                   >
-                    Open patient →
+                    Open user →
                   </Link>
                 )}
               </div>

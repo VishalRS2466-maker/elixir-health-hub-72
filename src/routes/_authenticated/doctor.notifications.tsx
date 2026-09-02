@@ -29,7 +29,7 @@ function DoctorNotificationsPage() {
     <div className="mx-auto max-w-3xl space-y-4">
       <header>
         <h1 className="text-2xl font-semibold">Notifications</h1>
-        <p className="text-sm text-muted-foreground">Updates about your patients, consent and appointments.</p>
+        <p className="text-sm text-muted-foreground">Updates about your users, consent and appointments.</p>
       </header>
       {items.length === 0 ? (
         <EmptyState icon={Bell} title="No notifications" description="You're all caught up." />

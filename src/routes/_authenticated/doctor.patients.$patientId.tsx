@@ -23,7 +23,7 @@ function PatientClinicalView() {
   const addFn = useServerFn(doctorAddRecord);
 
   const view = useQuery({
-    queryKey: ["doctor-patient-view", patientId],
+    queryKey: ["doctor-user-view", patientId],
     queryFn: () => viewFn({ data: { patientId } }),
   });
 
@@ -39,7 +39,7 @@ function PatientClinicalView() {
       <EmptyState
         icon={ShieldAlert}
         title="Access denied"
-        description="This patient has not granted you active consent, or the consent expired or was revoked."
+        description="This user has not granted you active consent, or the consent expired or was revoked."
       />
     );
   }
@@ -59,7 +59,7 @@ function PatientClinicalView() {
       toast.success("Record added and audited");
       setTitle("");
       setDescription("");
-      await qc.invalidateQueries({ queryKey: ["doctor-patient-view", patientId] });
+      await qc.invalidateQueries({ queryKey: ["doctor-user-view", patientId] });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Could not save record");
     } finally {

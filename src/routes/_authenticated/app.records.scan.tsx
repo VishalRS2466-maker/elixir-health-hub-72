@@ -164,7 +164,7 @@ function ScanPage() {
       await AuditService.log({
         actorId: user.id,
         actorName: profile?.full_name ?? "User",
-        actorRole: "patient",
+        actorRole: "user",
         patientId: user.id,
         action: "Added medical record from Smart Scan",
         resource: form.title,
@@ -389,7 +389,7 @@ function ReviewForm({
             <div className="space-y-1.5">
               <Label htmlFor="s-user">User name</Label>
               <Input
-                id="s-patient"
+                id="s-user"
                 value={form.patient_name}
                 onChange={(e) => set("patient_name", e.target.value)}
               />

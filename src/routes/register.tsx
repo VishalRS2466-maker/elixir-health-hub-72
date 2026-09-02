@@ -41,11 +41,11 @@ const schema = z
     path: ["confirm"],
   });
 
-const ROLES = ["patient", "doctor", "admin"] as const;
+const ROLES = ["user", "doctor", "admin"] as const;
 
 function RegisterPage() {
   const navigate = useNavigate();
-  const [role, setRole] = useState<AuthService.AppRole>("patient");
+  const [role, setRole] = useState<AuthService.AppRole>("user");
   const [form, setForm] = useState({
     fullName: "",
     email: "",
@@ -198,7 +198,7 @@ function RegisterPage() {
                       role === r ? "border-primary bg-brand-soft" : "bg-background"
                     }`}
                   >
-                    {r === "patient" ? "User" : r}
+                    {r === "user" ? "User" : r}
                   </button>
                 ))}
               </div>

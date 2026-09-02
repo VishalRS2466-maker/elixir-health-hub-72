@@ -140,7 +140,7 @@ function fmtRecord(r: {
 
 /**
  * Retrieve the minimum authorized context for a question.
- * `patientId` must already be authorized for the caller (own id, or a patient
+ * `patientId` must already be authorized for the caller (own id, or a user
  * whose consent has been verified). RLS enforces this a second time.
  */
 export async function buildContext(

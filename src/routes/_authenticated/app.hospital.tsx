@@ -575,7 +575,7 @@ function DoctorsTab() {
       await AuditService.log({
         actorId: user.id,
         actorName: profile?.full_name ?? "User",
-        actorRole: "patient",
+        actorRole: "user",
         patientId: user.id,
         action: "Booked doctor appointment",
         resource: "Appointment",

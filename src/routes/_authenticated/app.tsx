@@ -15,7 +15,7 @@ function AppLayout() {
   const { role, roleLoading } = useSession();
   const navigate = useNavigate();
 
-  // Doctors belong in the doctor portal — never render the patient shell for them.
+  // Doctors belong in the doctor portal — never render the user shell for them.
   useEffect(() => {
     if (!roleLoading && role === "doctor") navigate({ to: "/doctor", replace: true });
   }, [role, roleLoading, navigate]);
