@@ -289,34 +289,34 @@ function HomePage() {
             Manage
           </Link>
         </div>
-        {todayReminders.length > 0 ? (
+        {todaySchedule.length > 0 ? (
           <ul className="divide-y">
-            {todayReminders.map((r) => (
-              <li key={r.id} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
+            {todaySchedule.map((e) => (
+              <li key={e.medicine.id} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-soft">
                   <Clock className="h-4 w-4 text-primary" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold">{r.medicines?.name}</p>
+                  <p className="truncate text-sm font-semibold">{e.medicine.name}</p>
                   <p className="text-[11px] text-muted-foreground">
-                    {r.medicines?.dosage} ·{" "}
-                    {new Date(r.scheduled_at).toLocaleTimeString(undefined, {
+                    {e.medicine.dosage} ·{" "}
+                    {e.at.toLocaleTimeString(undefined, {
                       hour: "numeric",
                       minute: "2-digit",
                     })}
                   </p>
                 </div>
-                {r.status === "upcoming" ? (
+                {!e.log || e.log.status === "upcoming" ? (
                   <Button
                     size="sm"
                     variant="outline"
                     className="shrink-0 rounded-xl border-transparent bg-muted hover:bg-accent"
-                    onClick={() => act(r.id, "taken")}
+                    onClick={() => act(e, "taken")}
                   >
                     Taken
                   </Button>
                 ) : (
-                  <StatusChip status={r.status} />
+                  <StatusChip status={e.log.status} />
                 )}
               </li>
             ))}
