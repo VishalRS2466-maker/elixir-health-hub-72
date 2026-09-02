@@ -27,7 +27,7 @@ export type ScanDocumentInput = {
   fileName?: string | undefined;
 };
 
-const EXTRACT_PROMPT = `You are a medical document OCR and structuring engine for a patient health app.
+const EXTRACT_PROMPT = `You are a medical document OCR and structuring engine for a user health app.
 
 Read the attached document image (prescription, lab report, scan/diagnostic report or doctor note) and extract the information you can actually SEE. Never invent data. Leave fields empty ("" or []) when the document does not contain them.
 

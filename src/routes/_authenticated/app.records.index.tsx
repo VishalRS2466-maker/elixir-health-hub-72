@@ -84,7 +84,7 @@ function RecordsPage() {
     if (user)
       await AuditService.log({
         actorId: user.id,
-        actorName: profile?.full_name ?? "Patient",
+        actorName: profile?.full_name ?? "User",
         actorRole: "patient",
         patientId: user.id,
         action: "Deleted medical record",
@@ -351,7 +351,7 @@ function RecordForm({
       }
       await AuditService.log({
         actorId: user.id,
-        actorName: profile?.full_name ?? "Patient",
+        actorName: profile?.full_name ?? "User",
         actorRole: "patient",
         patientId: user.id,
         action: record ? "Updated medical record" : "Added medical record",

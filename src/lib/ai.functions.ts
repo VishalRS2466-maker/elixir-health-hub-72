@@ -14,9 +14,9 @@ export type AiChatInput = {
   contextData?: string | undefined;
 };
 
-const SYSTEM_PROMPT = `You are the ELIXIR AI Healthcare Assistant inside a patient-centric health app.
+const SYSTEM_PROMPT = `You are the ELIXIR AI Healthcare Assistant inside a user-centric health app.
 
-You HELP the patient by:
+You HELP the user by:
 - explaining medical terms, lab values, scan reports and prescriptions in plain, calm language
 - summarising what a report generally means and what questions to ask their doctor
 - helping them navigate the ELIXIR app (Medical Records, Emergency Card, E-Hospital booking, Explore, Consent, Medicine Reminders, First Aid)
@@ -60,8 +60,8 @@ export const aiChat = createServerFn({ method: "POST" })
     const model = process.env["AI_MODEL"] ?? "google/gemini-3.5-flash";
 
     const contextBlock = data.contextData
-      ? `Context the patient selected (${data.contextLabel ?? "app context"}):\n${data.contextData}`
-      : `The patient is currently on: ${data.contextLabel ?? "the ELIXIR home screen"}.`;
+      ? `Context the user selected (${data.contextLabel ?? "app context"}):\n${data.contextData}`
+      : `The user is currently on: ${data.contextLabel ?? "the ELIXIR home screen"}.`;
 
     try {
       const res = await fetch(`${baseUrl}/chat/completions`, {

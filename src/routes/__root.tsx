@@ -83,7 +83,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "ELIXIR is a patient-centric healthcare platform: universal patient ID, medical records, consent, emergency card and an AI health assistant.",
+          "ELIXIR is a user-centric healthcare platform: universal user ID, medical records, consent, emergency card and an AI health assistant.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

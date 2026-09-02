@@ -62,7 +62,7 @@ function ConsentPage() {
     if (user)
       await AuditService.log({
         actorId: user.id,
-        actorName: profile?.full_name ?? "Patient",
+        actorName: profile?.full_name ?? "User",
         actorRole: "patient",
         patientId: user.id,
         action: status === "approved" ? "Approved record access" : "Rejected record access",
@@ -199,7 +199,7 @@ function ConsentPage() {
                   if (user)
                     await AuditService.log({
                       actorId: user.id,
-                      actorName: profile?.full_name ?? "Patient",
+                      actorName: profile?.full_name ?? "User",
                       actorRole: "patient",
                       patientId: user.id,
                       action: "Revoked record access",

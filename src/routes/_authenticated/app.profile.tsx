@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_authenticated/app/profile")({
   head: () => ({
     meta: [
       { title: "My profile · ELIXIR" },
-      { name: "description", content: "Your Universal Patient ID, ABHA linking and emergency contacts." },
+      { name: "description", content: "Your Universal User ID, ABHA linking and emergency contacts." },
       { property: "og:title", content: "My profile · ELIXIR" },
       { property: "og:description", content: "Manage your identity and emergency contacts." },
       { name: "robots", content: "noindex" },
@@ -101,7 +101,7 @@ function ProfilePage() {
 
       <section className="card-soft bg-brand-soft p-5">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Universal Patient ID
+          Universal User ID
         </p>
         <p className="font-mono text-xl">{profile?.universal_id}</p>
         <p className="text-sm text-muted-foreground">

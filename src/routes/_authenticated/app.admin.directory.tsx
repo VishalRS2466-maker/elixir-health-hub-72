@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_authenticated/app/admin/directory")({
       { title: "Manage directory · ELIXIR" },
       { name: "description", content: "Hospitals, doctors, laboratories and pharmacies listed on ELIXIR." },
       { property: "og:title", content: "Manage directory · ELIXIR" },
-      { property: "og:description", content: "Review the healthcare providers available to patients." },
+      { property: "og:description", content: "Review the healthcare providers available to users." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -65,7 +65,7 @@ function DirectoryAdmin() {
       <div>
         <h1 className="text-2xl font-semibold">Manage directory</h1>
         <p className="text-sm text-muted-foreground">
-          Providers currently visible to patients. Listings are seeded demo data in this prototype.
+          Providers currently visible to users. Listings are seeded demo data in this prototype.
         </p>
       </div>
 

@@ -52,7 +52,7 @@ export async function bootstrapAccount(opts: {
   await supabase.from("user_roles").insert({ user_id: user.id, role: opts.role });
 
   if (!existing) {
-    // The database seeds realistic demo health data for new patients.
+    // The database seeds realistic demo health data for new users.
     const { error } = await supabase.from("profiles").insert({
       id: user.id,
       full_name: opts.fullName,
