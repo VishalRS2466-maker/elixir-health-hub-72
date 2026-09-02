@@ -8,10 +8,9 @@ import {
   ClipboardList,
   Compass,
   FileHeart,
-  IdCard,
   LifeBuoy,
   Pill,
-  Siren,
+  Sparkles,
   Stethoscope,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -40,13 +39,24 @@ export const Route = createFileRoute("/_authenticated/app/")({
 });
 
 const QUICK = [
-  { to: "/app/records", label: "Medical Records", icon: FileHeart, tone: "bg-brand-soft" },
+  { to: "/app/records", label: "Records", icon: FileHeart, tone: "bg-brand-soft" },
   { to: "/app/hospital", label: "E-Hospital", icon: Building2, tone: "bg-sage-soft" },
   { to: "/app/medicines", label: "Medicines", icon: Pill, tone: "bg-warm-soft" },
   { to: "/app/explore", label: "Explore", icon: Compass, tone: "bg-blush-soft" },
   { to: "/app/first-aid", label: "First Aid", icon: LifeBuoy, tone: "bg-emergency-soft" },
   { to: "/app/consent", label: "Consent", icon: ClipboardList, tone: "bg-muted" },
 ];
+
+function timeUntil(iso: string) {
+  const diff = new Date(iso).getTime() - Date.now();
+  if (diff <= 0) return "Due now";
+  const mins = Math.round(diff / 60000);
+  if (mins < 60) return `In ${mins} min`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `In ${hours}h ${mins % 60 ? `${mins % 60}m` : ""}`.trim();
+  const days = Math.floor(hours / 24);
+  return `In ${days}d`;
+}
 
 function HomePage() {
   const { user, profile, role } = useSession();
@@ -103,102 +113,93 @@ function HomePage() {
   }
 
   return (
-    <div className="space-y-5">
-      <div>
-        <h1 className="text-2xl font-semibold">
-          Hello, {profile?.full_name?.split(" ")[0] ?? "there"}
-        </h1>
-        <p className="text-sm text-muted-foreground">Here is your health at a glance.</p>
+    <div className="mx-auto w-full max-w-2xl space-y-6">
+      {/* Header: greeting, ID, compact SOS */}
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">
+            Hello, {profile?.full_name?.split(" ")[0] ?? "there"}
+          </h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            Patient ID:{" "}
+            <Link to="/app/profile" className="font-mono font-medium text-foreground hover:underline">
+              {profile?.universal_id ?? "—"}
+            </Link>
+          </p>
+          <p className="text-xs text-muted-foreground">
+            ABHA: {profile?.abha_id ? profile.abha_id : "Not linked yet"}
+          </p>
+        </div>
+        <button
+          onClick={() => setSos(true)}
+          className="flex shrink-0 items-center gap-2 rounded-full bg-emergency-soft px-4 py-2.5 text-sm font-semibold text-emergency shadow-sm transition-colors hover:opacity-80"
+        >
+          <span className="h-2 w-2 animate-pulse rounded-full bg-emergency" />
+          SOS Emergency
+        </button>
       </div>
 
       {role !== "patient" && (
         <Link
           to={role === "doctor" ? "/app/doctor" : "/app/admin"}
-          className="card-soft flex items-center gap-3 p-4"
+          className="flex items-center gap-3 rounded-2xl border bg-card p-4 transition-colors hover:bg-accent"
         >
           <Stethoscope className="h-5 w-5 text-primary" />
           <div>
-            <p className="font-semibold">Go to your {role} dashboard</p>
+            <p className="text-sm font-semibold">Go to your {role} dashboard</p>
             <p className="text-xs text-muted-foreground">Appointments, requests and management tools</p>
           </div>
         </Link>
       )}
 
-      {/* Universal Patient ID */}
-      <section className="card-soft overflow-hidden">
-        <div className="bg-brand-soft p-5">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                <IdCard className="h-4 w-4" /> Universal Patient ID
-              </p>
-              <p className="mt-1 font-display text-xl">{profile?.full_name}</p>
-              <p className="font-mono text-lg">{profile?.universal_id}</p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                ABHA ID: {profile?.abha_id ? profile.abha_id : "Not linked yet"}
-              </p>
-            </div>
-            <Button asChild variant="outline" size="sm" className="rounded-full">
-              <Link to="/app/profile">View profile</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* SOS */}
-      <button
-        onClick={() => setSos(true)}
-        className="flex w-full items-center gap-4 rounded-3xl bg-emergency px-5 py-5 text-left text-emergency-foreground shadow-lift transition-transform hover:scale-[1.01]"
-      >
-        <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emergency-foreground/20">
-          <Siren className="h-7 w-7" />
-        </span>
-        <span>
-          <span className="block text-xl font-semibold">Emergency SOS</span>
-          <span className="block text-sm opacity-90">Get emergency assistance</span>
-        </span>
-      </button>
-
-      {/* Medicine reminder */}
-      <section className="card-soft p-5">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Next medicine</h2>
-          <Link to="/app/medicines" className="text-sm font-medium text-primary">
-            All medicines
-          </Link>
-        </div>
+      {/* Next medicine: primary focus */}
+      <section className="rounded-3xl border bg-card p-6 shadow-sm">
         {nextReminder ? (
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 rounded-2xl bg-warm-soft p-4">
-              <Pill className="h-6 w-6 text-primary" />
-              <div className="flex-1">
-                <p className="font-semibold">{nextReminder.medicines?.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {nextReminder.medicines?.dosage} ·{" "}
-                  {new Date(nextReminder.scheduled_at).toLocaleString(undefined, {
-                    weekday: "short",
+          <>
+            <div className="mb-4 flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
+                  <Pill className="h-6 w-6 text-primary" />
+                </span>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-primary">Next medicine</p>
+                  <h2 className="text-lg font-bold">{nextReminder.medicines?.name}</h2>
+                  <p className="text-xs text-muted-foreground">{nextReminder.medicines?.dosage}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-lg font-bold">
+                  {new Date(nextReminder.scheduled_at).toLocaleTimeString(undefined, {
                     hour: "numeric",
                     minute: "2-digit",
                   })}
                 </p>
+                <p className="text-xs text-muted-foreground">{timeUntil(nextReminder.scheduled_at)}</p>
               </div>
-              <StatusChip status={nextReminder.status} />
             </div>
-            <div className="grid grid-cols-3 gap-2">
-              <Button className="rounded-xl" onClick={() => act(nextReminder.id, "taken")}>
+            <div className="grid grid-cols-3 gap-3">
+              <Button className="rounded-2xl py-3 shadow-md active:scale-95" onClick={() => act(nextReminder.id, "taken")}>
                 Taken
               </Button>
-              <Button variant="outline" className="rounded-xl" onClick={() => act(nextReminder.id, "skipped")}>
+              <Button
+                variant="outline"
+                className="rounded-2xl border-transparent bg-muted py-3 hover:bg-accent"
+                onClick={() => act(nextReminder.id, "skipped")}
+              >
                 Skip
               </Button>
-              <Button variant="outline" className="rounded-xl" onClick={() => act(nextReminder.id, "snoozed")}>
+              <Button
+                variant="outline"
+                className="rounded-2xl border-transparent bg-muted py-3 hover:bg-accent"
+                onClick={() => act(nextReminder.id, "snoozed")}
+              >
                 Snooze
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="mt-3 text-xs text-muted-foreground">
               ELIXIR only records what you confirm here — it cannot detect whether a medicine was taken.
             </p>
-          </div>
+          </>
         ) : (
           <EmptyState
             icon={Pill}
@@ -213,109 +214,113 @@ function HomePage() {
         )}
       </section>
 
-      {/* Quick actions */}
-      <section>
-        <h2 className="mb-3 text-lg font-semibold">Quick access</h2>
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-          {QUICK.map((q) => (
-            <Link key={q.to} to={q.to} className="card-soft flex flex-col items-center gap-2 p-3 text-center">
-              <span className={`flex h-11 w-11 items-center justify-center rounded-2xl ${q.tone} text-primary`}>
-                <q.icon className="h-5 w-5" />
-              </span>
-              <span className="text-xs font-medium leading-tight">{q.label}</span>
+      {/* Quick access: light icon tiles */}
+      <section className="grid grid-cols-3 gap-4 sm:grid-cols-6">
+        {QUICK.map((q) => (
+          <Link key={q.to} to={q.to} className="group flex flex-col items-center gap-2">
+            <span
+              className={`flex h-14 w-14 items-center justify-center rounded-2xl border border-transparent ${q.tone} text-primary transition-colors group-hover:border-primary/20 group-hover:bg-primary/10`}
+            >
+              <q.icon className="h-6 w-6" />
+            </span>
+            <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground">{q.label}</span>
+          </Link>
+        ))}
+      </section>
+
+      {/* Secondary info: appointment + records side by side */}
+      <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="rounded-2xl border bg-card p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-sm font-bold">Upcoming</h3>
+            <Link to="/app/hospital" className="text-xs font-semibold text-primary">
+              Book
             </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Upcoming appointment */}
-      <section className="card-soft p-5">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Upcoming appointment</h2>
-          <Link to="/app/hospital" className="text-sm font-medium text-primary">
-            Book
-          </Link>
-        </div>
-        {nextAppointment ? (
-          <div className="flex items-center gap-3 rounded-2xl bg-sage-soft p-4">
-            <CalendarClock className="h-6 w-6 text-primary" />
-            <div className="flex-1">
-              <p className="font-semibold">
-                {nextAppointment.doctors?.full_name} · {nextAppointment.doctors?.specialty}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {new Date(nextAppointment.slot_at).toLocaleString(undefined, {
-                  weekday: "short",
-                  day: "numeric",
-                  month: "short",
-                  hour: "numeric",
-                  minute: "2-digit",
-                })}
-              </p>
-            </div>
-            <StatusChip status={nextAppointment.status} />
           </div>
-        ) : (
-          <EmptyState
-            icon={CalendarClock}
-            title="No upcoming appointments"
-            description="Book a doctor to see your appointments here."
-            action={
-              <Button asChild className="rounded-xl">
-                <Link to="/app/hospital">Book a doctor</Link>
-              </Button>
-            }
-          />
-        )}
-      </section>
-
-      {/* Recent records */}
-      <section className="card-soft p-5">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Recent medical records</h2>
-          <Link to="/app/records" className="text-sm font-medium text-primary">
-            View all
-          </Link>
+          {nextAppointment ? (
+            <div className="flex items-center gap-4">
+              <div className="min-w-[3.5rem] rounded-xl bg-sage-soft p-2 text-center">
+                <span className="block text-[10px] font-bold uppercase text-primary">
+                  {new Date(nextAppointment.slot_at).toLocaleString(undefined, { month: "short" })}
+                </span>
+                <span className="block text-lg font-bold leading-tight">
+                  {new Date(nextAppointment.slot_at).getDate()}
+                </span>
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold">
+                  {nextAppointment.doctors?.full_name}
+                </p>
+                <p className="truncate text-xs text-muted-foreground">
+                  {nextAppointment.doctors?.specialty} ·{" "}
+                  {new Date(nextAppointment.slot_at).toLocaleTimeString(undefined, {
+                    hour: "numeric",
+                    minute: "2-digit",
+                  })}
+                </p>
+              </div>
+              <StatusChip status={nextAppointment.status} />
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <CalendarClock className="h-5 w-5" />
+              <p className="text-xs">No upcoming appointments — book a doctor to see it here.</p>
+            </div>
+          )}
         </div>
-        {recentRecords.length > 0 ? (
-          <ul className="space-y-2">
-            {recentRecords.map((r) => (
-              <li key={r.id} className="flex items-center gap-3 rounded-2xl border p-3">
-                <FileHeart className="h-5 w-5 text-primary" />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium">{r.title}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {categoryLabel(r.category)} · {new Date(r.record_date).toLocaleDateString()}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <EmptyState
-            icon={FileHeart}
-            title="No medical records yet"
-            description="Add your first medical record."
-            action={
-              <Button asChild className="rounded-xl">
-                <Link to="/app/records">Add record</Link>
-              </Button>
-            }
-          />
-        )}
+
+        <div className="rounded-2xl border bg-card p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-sm font-bold">Recent records</h3>
+            <Link to="/app/records" className="text-xs font-semibold text-primary">
+              View all
+            </Link>
+          </div>
+          {recentRecords.length > 0 ? (
+            <ul className="space-y-3">
+              {recentRecords.map((r) => (
+                <li key={r.id} className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-soft">
+                    <FileHeart className="h-4 w-4 text-primary" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-xs font-semibold">{r.title}</p>
+                    <p className="text-[10px] text-muted-foreground">
+                      {categoryLabel(r.category)} · {new Date(r.record_date).toLocaleDateString()}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <FileHeart className="h-5 w-5" />
+              <p className="text-xs">No records yet — add your first medical record.</p>
+            </div>
+          )}
+        </div>
       </section>
 
+      {/* AI assistant entry */}
       <button
         onClick={() => ai.open({ label: "ELIXIR home screen" }, "What can you help me with here?")}
-        className="card-soft flex w-full items-center gap-3 p-4 text-left"
+        className="group relative flex w-full items-center justify-between overflow-hidden rounded-3xl bg-foreground p-5 text-left shadow-lg transition-shadow hover:shadow-xl"
       >
-        <Bot className="h-6 w-6 text-primary" />
-        <div>
-          <p className="font-semibold">AI Healthcare Assistant</p>
-          <p className="text-xs text-muted-foreground">
-            Ask about a report, prescription or how to use ELIXIR
-          </p>
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent" />
+        <div className="relative z-10 flex items-center gap-4">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-background/10 backdrop-blur-md">
+            <Sparkles className="h-5 w-5 text-background" />
+          </span>
+          <span>
+            <span className="block text-sm font-bold text-background">Ask ELIXIR AI</span>
+            <span className="block text-xs text-background/60">
+              Ask about a report, prescription or how to use ELIXIR
+            </span>
+          </span>
         </div>
+        <span className="relative z-10 flex items-center gap-1.5 rounded-full border border-background/20 bg-background/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-tighter text-background transition-colors group-hover:bg-background/20">
+          <Bot className="h-3 w-3" /> Tap to talk
+        </span>
       </button>
 
       <SosDialog
