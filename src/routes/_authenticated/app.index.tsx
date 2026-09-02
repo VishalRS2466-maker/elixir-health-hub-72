@@ -370,6 +370,27 @@ function HomePage() {
       </div>
       </div>
 
+      {/* Pending consent strip */}
+      {pendingConsent.length > 0 && (
+        <Link
+          to="/app/consent"
+          className="flex items-center gap-3 rounded-2xl border border-primary/20 bg-brand-soft p-4 transition-colors hover:bg-primary/10"
+        >
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+            <ShieldAlert className="h-5 w-5 text-primary" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold">
+              {pendingConsent.length} access {pendingConsent.length === 1 ? "request" : "requests"} waiting
+            </p>
+            <p className="text-xs text-muted-foreground">
+              A doctor is asking to view your records — review and respond
+            </p>
+          </div>
+          <span className="shrink-0 text-xs font-semibold text-primary">Review</span>
+        </Link>
+      )}
+
       {/* AI assistant entry */}
       <button
         onClick={() => ai.open({ label: "ELIXIR home screen" }, "What can you help me with here?")}
