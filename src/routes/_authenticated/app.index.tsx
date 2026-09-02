@@ -241,30 +241,32 @@ function HomePage() {
               Book
             </Link>
           </div>
-          {nextAppointment ? (
-            <div className="flex items-center gap-4">
-              <div className="min-w-[3.5rem] rounded-xl bg-sage-soft p-2 text-center">
-                <span className="block text-[10px] font-bold uppercase text-primary">
-                  {new Date(nextAppointment.slot_at).toLocaleString(undefined, { month: "short" })}
-                </span>
-                <span className="block text-lg font-bold leading-tight">
-                  {new Date(nextAppointment.slot_at).getDate()}
-                </span>
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold">
-                  {nextAppointment.doctors?.full_name}
-                </p>
-                <p className="truncate text-xs text-muted-foreground">
-                  {nextAppointment.doctors?.specialty} ·{" "}
-                  {new Date(nextAppointment.slot_at).toLocaleTimeString(undefined, {
-                    hour: "numeric",
-                    minute: "2-digit",
-                  })}
-                </p>
-              </div>
-              <StatusChip status={nextAppointment.status} />
-            </div>
+          {upcomingAppointments.length > 0 ? (
+            <ul className="space-y-3">
+              {upcomingAppointments.map((a) => (
+                <li key={a.id} className="flex items-center gap-4">
+                  <div className="min-w-[3.5rem] rounded-xl bg-sage-soft p-2 text-center">
+                    <span className="block text-[10px] font-bold uppercase text-primary">
+                      {new Date(a.slot_at).toLocaleString(undefined, { month: "short" })}
+                    </span>
+                    <span className="block text-lg font-bold leading-tight">
+                      {new Date(a.slot_at).getDate()}
+                    </span>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold">{a.doctors?.full_name}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {a.doctors?.specialty} ·{" "}
+                      {new Date(a.slot_at).toLocaleTimeString(undefined, {
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
+                  <StatusChip status={a.status} />
+                </li>
+              ))}
+            </ul>
           ) : (
             <div className="flex items-center gap-3 text-muted-foreground">
               <CalendarClock className="h-5 w-5" />
