@@ -179,3 +179,32 @@ export const searchNearbyPlaces = createServerFn({ method: "POST" })
       })
       .sort((a, b) => (a.distanceKm ?? 999) - (b.distanceKm ?? 999));
   });
+
+/* ------------------------------------------------------------------ */
+/* Geocoding — manual location entry                                   */
+/* ------------------------------------------------------------------ */
+
+const geocodeSchema = z.object({ query: z.string().trim().min(2).max(120) });
+
+export type GeocodeResult = { label: string; lat: number; lng: number };
+
+export const geocodeLocation = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => geocodeSchema.parse(data))
+  .handler(async ({ data }): Promise<GeocodeResult> => {
+    const result = await callGateway("/places/v1/places:searchText", {
+      textQuery: data.query,
+      maxResultCount: 1,
+    });
+    const place = (result.places ?? [])[0];
+    const lat = place?.location?.latitude;
+    const lng = place?.location?.longitude;
+    if (typeof lat !== "number" || typeof lng !== "number") {
+      throw new Error("We could not find that location. Try a city, area or pin code.");
+    }
+    return {
+      label: place?.formattedAddress ?? place?.displayName?.text ?? data.query,
+      lat,
+      lng,
+    };
+  });

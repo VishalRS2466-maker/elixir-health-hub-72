@@ -127,6 +127,45 @@ export type Database = {
         }
         Relationships: []
       }
+      catalog_services: {
+        Row: {
+          created_at: string
+          duration_min: number
+          facility_kinds: string[]
+          id: string
+          info: string
+          kind: string
+          name: string
+          prep_note: string | null
+          price: number
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          duration_min?: number
+          facility_kinds?: string[]
+          id?: string
+          info: string
+          kind: string
+          name: string
+          prep_note?: string | null
+          price?: number
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          duration_min?: number
+          facility_kinds?: string[]
+          id?: string
+          info?: string
+          kind?: string
+          name?: string
+          prep_note?: string | null
+          price?: number
+          sort_order?: number
+        }
+        Relationships: []
+      }
       consent_requests: {
         Row: {
           approved_categories: string[]
@@ -751,9 +790,13 @@ export type Database = {
       service_bookings: {
         Row: {
           created_at: string
+          facility_address: string | null
+          facility_kind: string | null
+          facility_name: string | null
+          facility_place_id: string | null
           id: string
           kind: string
-          lab_id: string
+          lab_id: string | null
           patient_id: string
           price: number
           service_id: string | null
@@ -763,9 +806,13 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          facility_address?: string | null
+          facility_kind?: string | null
+          facility_name?: string | null
+          facility_place_id?: string | null
           id?: string
           kind?: string
-          lab_id: string
+          lab_id?: string | null
           patient_id: string
           price?: number
           service_id?: string | null
@@ -775,9 +822,13 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          facility_address?: string | null
+          facility_kind?: string | null
+          facility_name?: string | null
+          facility_place_id?: string | null
           id?: string
           kind?: string
-          lab_id?: string
+          lab_id?: string | null
           patient_id?: string
           price?: number
           service_id?: string | null
