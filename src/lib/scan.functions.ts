@@ -64,7 +64,7 @@ function normalise(raw: Record<string, unknown>): ScanExtraction {
     "medical_history",
     "allergy",
   ];
-  const category = coerceString(raw["category"], "consultation");
+  const category = coerceString(raw["category"], "consultation").toLowerCase().replace(/[\s-]+/g, "_");
   const date = coerceString(raw["record_date"]);
   return {
     category: allowed.includes(category) ? category : "consultation",
