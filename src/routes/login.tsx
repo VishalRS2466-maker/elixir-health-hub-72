@@ -177,6 +177,31 @@ function LoginPage() {
               {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Login
             </Button>
+
+            {passkeyReady && (
+              <>
+                <div className="flex items-center gap-3 py-1">
+                  <span className="h-px flex-1 bg-border" />
+                  <span className="text-xs uppercase tracking-wide text-muted-foreground">or</span>
+                  <span className="h-px flex-1 bg-border" />
+                </div>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="h-12 w-full rounded-2xl"
+                  disabled={busy}
+                  onClick={passkeyLogin}
+                >
+                  <Fingerprint className="mr-2 h-5 w-5" />
+                  Sign in with Passkey
+                </Button>
+                <p className="text-center text-xs text-muted-foreground">
+                  Uses your fingerprint, face, Windows Hello or device PIN. ELIXIR never stores
+                  biometric data.
+                </p>
+              </>
+            )}
+
             <Button asChild variant="outline" className="h-12 w-full rounded-2xl">
               <Link to="/register">Create Account</Link>
             </Button>
