@@ -94,3 +94,62 @@ export function demoSlots(days = 5) {
   }
   return slots;
 }
+
+/* ------------------------------------------------------------------ */
+/* Location-based slot availability                                    */
+/* ------------------------------------------------------------------ */
+
+export type BookingDay = { iso: string; label: string; isToday: boolean };
+export type BookingSlot = { iso: string; label: string };
+
+/** Next `count` bookable days, starting today. */
+export function bookingDays(count = 7): BookingDay[] {
+  const days: BookingDay[] = [];
+  for (let i = 0; i < count; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    d.setHours(0, 0, 0, 0);
+    days.push({
+      iso: d.toISOString(),
+      isToday: i === 0,
+      label:
+        i === 0
+          ? "Today"
+          : i === 1
+            ? "Tomorrow"
+            : d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" }),
+    });
+  }
+  return days;
+}
+
+/**
+ * Slots for a given day. Deterministic per facility so a centre keeps the same
+ * availability while the user browses. Past slots for today are dropped.
+ */
+export function slotsForDay(dayIso: string, facilityId: string): BookingSlot[] {
+  const day = new Date(dayIso);
+  const now = new Date();
+  const seed = [...facilityId].reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) % 9973, 7);
+  const hours = [8, 9, 10, 11, 12, 15, 16, 17, 18, 19];
+  const slots: BookingSlot[] = [];
+  hours.forEach((h, index) => {
+    // Mark ~1 in 4 slots as taken so availability feels real.
+    if ((seed + index * 5 + day.getDate()) % 4 === 0) return;
+    const at = new Date(day);
+    at.setHours(h, index % 2 === 0 ? 0 : 30, 0, 0);
+    if (at.getTime() < now.getTime() + 30 * 60 * 1000) return;
+    slots.push({
+      iso: at.toISOString(),
+      label: at.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }),
+    });
+  });
+  return slots;
+}
+
+/** True when the facility still has at least one slot left today. */
+export function hasSlotsToday(facilityId: string) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return slotsForDay(today.toISOString(), facilityId).length > 0;
+}
