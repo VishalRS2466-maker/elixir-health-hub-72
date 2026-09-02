@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Loader2 } from "lucide-react";
+import { Fingerprint, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import * as AuthService from "@/services/auth";
+import { passkeySupported, signInWithPasskey } from "@/lib/passkeys";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -41,6 +42,30 @@ function LoginPage() {
   const [remember, setRemember] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [passkeyReady, setPasskeyReady] = useState(false);
+
+  useEffect(() => {
+    setPasskeyReady(passkeySupported());
+  }, []);
+
+  async function passkeyLogin() {
+    setError(null);
+    if (!z.string().email().safeParse(form.email).success) {
+      setError("Enter your email address, then sign in with your passkey");
+      return;
+    }
+    setBusy(true);
+    try {
+      await signInWithPasskey(form.email);
+      toast.success("Signed in with passkey");
+      navigate({ to: "/app", replace: true });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Passkey sign-in failed";
+      setError(/NotAllowed|abort/i.test(message) ? "Device verification was cancelled." : message);
+    } finally {
+      setBusy(false);
+    }
+  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
