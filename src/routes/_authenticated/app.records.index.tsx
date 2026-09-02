@@ -99,9 +99,17 @@ function RecordsPage() {
           <h1 className="text-2xl font-semibold">Medical Records</h1>
           <p className="text-sm text-muted-foreground">Your complete health timeline, owned by you.</p>
         </div>
-        <Button className="rounded-2xl" onClick={() => setCreating(true)}>
-          <Plus className="mr-1 h-4 w-4" /> Add record
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild variant="outline" className="rounded-2xl">
+            <Link to="/app/records/scan">
+              <ScanLine className="mr-1 h-4 w-4" /> Scan document
+            </Link>
+          </Button>
+          <Button className="rounded-2xl" onClick={() => setCreating(true)}>
+            <Plus className="mr-1 h-4 w-4" /> Add record
+          </Button>
+        </div>
+
       </div>
 
       <Link
