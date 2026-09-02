@@ -86,10 +86,10 @@ function HomePage() {
   });
 
   const nextReminder = (reminders.data ?? []).find((r) => r.status === "upcoming");
-  const nextAppointment = (appointments.data ?? []).find(
-    (a) => new Date(a.slot_at) > new Date() && a.status !== "cancelled",
-  );
-  const recentRecords = (records.data ?? []).slice(0, 3);
+  const upcomingAppointments = (appointments.data ?? [])
+    .filter((a) => new Date(a.slot_at) > new Date() && a.status !== "cancelled")
+    .slice(0, 2);
+  const recentRecords = (records.data ?? []).slice(0, 5);
 
   async function logSos(action: string) {
     if (!user) return;
