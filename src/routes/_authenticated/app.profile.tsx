@@ -92,7 +92,7 @@ function ProfilePage() {
             await qc.cancelQueries();
             qc.clear();
             await supabase.auth.signOut();
-            navigate({ to: "/auth", replace: true });
+            navigate({ to: "/login", replace: true });
           }}
         >
           <LogOut className="mr-1 h-4 w-4" /> Sign out
