@@ -8,6 +8,59 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
  * RLS (has_consent) enforces the same rules a second time in the database.
  */
 
+
+export type DoctorRequestRow = {
+  id: string;
+  patient_id: string;
+  patient_name: string;
+  status: string;
+  reason: string | null;
+  requested_categories: string[];
+  approved_categories: string[];
+  expires_at: string | null;
+  created_at: string;
+};
+
+export type DoctorAppointmentRow = {
+  id: string;
+  slot_at: string;
+  mode: string;
+  reason: string | null;
+  status: string;
+  patient_id: string;
+  patient_name: string;
+};
+
+export type DoctorNotificationRow = {
+  id: string;
+  title: string;
+  body: string;
+  kind: string;
+  read: boolean;
+  created_at: string;
+  link: string | null;
+};
+
+export type DoctorOverview = {
+  doctor: { id: string; full_name: string; specialty: string; hospital_id: string | null } | null;
+  requests: DoctorRequestRow[];
+  appointments: DoctorAppointmentRow[];
+  notifications: DoctorNotificationRow[];
+};
+
+export type DoctorPatientRow = {
+  consent_id: string;
+  patient_id: string;
+  full_name: string;
+  universal_id: string;
+  gender: string | null;
+  blood_group: string | null;
+  dob: string | null;
+  categories: string[];
+  expires_at: string | null;
+  reason: string | null;
+};
+
 const UUID = /^[0-9a-f-]{36}$/i;
 
 type Ctx = { supabase: any; userId: string };
@@ -59,7 +112,7 @@ async function audit(
 
 export const doctorOverview = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .handler(async ({ context }): Promise<DoctorOverview> => {
     await requireDoctor(context as Ctx);
     const c = context as Ctx;
 
@@ -118,7 +171,7 @@ export const doctorOverview = createServerFn({ method: "GET" })
 /** Patients whose consent is currently active for this doctor. */
 export const doctorPatients = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .handler(async ({ context }): Promise<DoctorPatientRow[]> => {
     await requireDoctor(context as Ctx);
     const c = context as Ctx;
     const { data } = await c.supabase
