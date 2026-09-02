@@ -20,7 +20,7 @@ export async function listDoctorAppointments(doctorId: string) {
   if (error) throw error;
   const rows = data ?? [];
   const patientIds = [...new Set(rows.map((r) => r.patient_id))];
-  if (patientIds.length === 0) return rows.map((r) => ({ ...r, patient_name: "Patient" }));
+  if (patientIds.length === 0) return rows.map((r) => ({ ...r, patient_name: "User" }));
   const { data: profiles } = await supabase
     .from("profiles")
     .select("id, full_name, universal_id")
@@ -28,7 +28,7 @@ export async function listDoctorAppointments(doctorId: string) {
   const byId = new Map((profiles ?? []).map((p) => [p.id, p]));
   return rows.map((r) => ({
     ...r,
-    patient_name: byId.get(r.patient_id)?.full_name ?? "Patient",
+    patient_name: byId.get(r.patient_id)?.full_name ?? "User",
     patient_universal_id: byId.get(r.patient_id)?.universal_id ?? "",
   }));
 }

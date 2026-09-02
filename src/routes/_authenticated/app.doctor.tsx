@@ -181,7 +181,7 @@ function DoctorPage() {
           <article key={r.id} className="card-soft p-4">
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div>
-                <p className="font-semibold">Patient {r.patient_id.slice(0, 8)}…</p>
+                <p className="font-semibold">User {r.patient_id.slice(0, 8)}…</p>
                 <p className="text-xs text-muted-foreground">
                   {r.status === "approved"
                     ? r.approved_categories.map(categoryLabel).join(", ")
