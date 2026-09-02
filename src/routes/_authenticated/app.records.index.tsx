@@ -114,10 +114,21 @@ function RecordsPage() {
 
       </div>
 
+      <Link to="/app/records/scan" className="card-soft flex items-center gap-3 bg-brand-soft p-4">
+        <ScanLine className="h-6 w-6 text-primary" />
+        <div className="flex-1">
+          <p className="font-semibold">Scan Prescription / Report</p>
+          <p className="text-xs text-muted-foreground">
+            Photograph a document — ELIXIR reads it, you review and confirm before it is saved
+          </p>
+        </div>
+      </Link>
+
       <Link
         to="/app/records/emergency-card"
         className="card-soft flex items-center gap-3 bg-emergency-soft p-4"
       >
+
         <HeartPulse className="h-6 w-6 text-emergency" />
         <div className="flex-1">
           <p className="font-semibold">Emergency Medical Card</p>
