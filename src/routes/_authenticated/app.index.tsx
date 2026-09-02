@@ -209,7 +209,7 @@ function HomePage() {
         <div className="space-y-5 lg:col-span-3 xl:col-span-2">
       {/* Next medicine: primary focus */}
       <section className="rounded-3xl border bg-card p-6 shadow-sm">
-        {nextReminder ? (
+        {nextDose ? (
           <>
             <div className="mb-4 flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
@@ -218,35 +218,35 @@ function HomePage() {
                 </span>
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wider text-primary">Next medicine</p>
-                  <h2 className="text-lg font-bold">{nextReminder.medicines?.name}</h2>
-                  <p className="text-xs text-muted-foreground">{nextReminder.medicines?.dosage}</p>
+                  <h2 className="text-lg font-bold">{nextDose.medicine.name}</h2>
+                  <p className="text-xs text-muted-foreground">{nextDose.medicine.dosage}</p>
                 </div>
               </div>
               <div className="text-right">
                 <p className="text-lg font-bold">
-                  {new Date(nextReminder.scheduled_at).toLocaleTimeString(undefined, {
+                  {nextDose.at.toLocaleTimeString(undefined, {
                     hour: "numeric",
                     minute: "2-digit",
                   })}
                 </p>
-                <p className="text-xs text-muted-foreground">{timeUntil(nextReminder.scheduled_at)}</p>
+                <p className="text-xs text-muted-foreground">{timeUntil(nextDose.at.toISOString())}</p>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-3">
-              <Button className="rounded-2xl py-3 shadow-md active:scale-95" onClick={() => act(nextReminder.id, "taken")}>
+              <Button className="rounded-2xl py-3 shadow-md active:scale-95" onClick={() => act(nextDose, "taken")}>
                 Taken
               </Button>
               <Button
                 variant="outline"
                 className="rounded-2xl border-transparent bg-muted py-3 hover:bg-accent"
-                onClick={() => act(nextReminder.id, "skipped")}
+                onClick={() => act(nextDose, "skipped")}
               >
                 Skip
               </Button>
               <Button
                 variant="outline"
                 className="rounded-2xl border-transparent bg-muted py-3 hover:bg-accent"
-                onClick={() => act(nextReminder.id, "snoozed")}
+                onClick={() => act(nextDose, "snoozed")}
               >
                 Snooze
               </Button>
