@@ -653,6 +653,48 @@ export type Database = {
         }
         Relationships: []
       }
+      passkey_credentials: {
+        Row: {
+          backed_up: boolean
+          counter: number
+          created_at: string
+          credential_id: string
+          device_type: string
+          id: string
+          last_used_at: string | null
+          nickname: string
+          public_key: string
+          transports: string[]
+          user_id: string
+        }
+        Insert: {
+          backed_up?: boolean
+          counter?: number
+          created_at?: string
+          credential_id: string
+          device_type?: string
+          id?: string
+          last_used_at?: string | null
+          nickname?: string
+          public_key: string
+          transports?: string[]
+          user_id: string
+        }
+        Update: {
+          backed_up?: boolean
+          counter?: number
+          created_at?: string
+          credential_id?: string
+          device_type?: string
+          id?: string
+          last_used_at?: string | null
+          nickname?: string
+          public_key?: string
+          transports?: string[]
+          user_id?: string
+        }
+        Relationships: []
+      }
       pharmacies: {
         Row: {
           address: string
@@ -749,6 +791,30 @@ export type Database = {
         }
         Relationships: []
       }
+      reauth_sessions: {
+        Row: {
+          expires_at: string
+          id: string
+          level: string
+          user_id: string
+          verified_at: string
+        }
+        Insert: {
+          expires_at?: string
+          id?: string
+          level?: string
+          user_id: string
+          verified_at?: string
+        }
+        Update: {
+          expires_at?: string
+          id?: string
+          level?: string
+          user_id?: string
+          verified_at?: string
+        }
+        Relationships: []
+      }
       reminder_logs: {
         Row: {
           acted_at: string | null
@@ -786,6 +852,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      security_events: {
+        Row: {
+          created_at: string
+          detail: string | null
+          device: string | null
+          event: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          device?: string | null
+          event: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          device?: string | null
+          event?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
       }
       service_bookings: {
         Row: {
@@ -871,6 +964,36 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      webauthn_challenges: {
+        Row: {
+          challenge: string
+          created_at: string
+          email: string | null
+          expires_at: string
+          id: string
+          purpose: string
+          user_id: string | null
+        }
+        Insert: {
+          challenge: string
+          created_at?: string
+          email?: string | null
+          expires_at?: string
+          id?: string
+          purpose: string
+          user_id?: string | null
+        }
+        Update: {
+          challenge?: string
+          created_at?: string
+          email?: string | null
+          expires_at?: string
+          id?: string
+          purpose?: string
+          user_id?: string | null
         }
         Relationships: []
       }
