@@ -36,20 +36,30 @@ export function useSession() {
 
   const roles = useQuery({
     queryKey: ["roles", user?.id],
-    queryFn: () => AuthService.getRoles(user!.id),
+    queryFn: () => AuthService.getRoles(),
     enabled: !!user,
+    staleTime: 0,
   });
 
   const roleList = roles.data ?? [];
-  return {
-    user,
-    loading: loading || profile.isLoading || roles.isLoading,
-    profile: profile.data ?? null,
-    roles: roleList,
-    role: (roleList.includes("admin")
+  const roleLoading = loading || !user || roles.isPending || roles.isFetching;
+  // Never default to "patient": the role stays null until the server confirms it.
+  const role = roleLoading
+    ? null
+    : roleList.includes("admin")
       ? "admin"
       : roleList.includes("doctor")
         ? "doctor"
-        : "patient") as "admin" | "doctor" | "patient",
+        : roleList.includes("patient")
+          ? "patient"
+          : null;
+
+  return {
+    user,
+    loading: loading || profile.isLoading || roles.isPending,
+    roleLoading,
+    profile: profile.data ?? null,
+    roles: roleList,
+    role: role as "admin" | "doctor" | "patient" | null,
   };
 }
