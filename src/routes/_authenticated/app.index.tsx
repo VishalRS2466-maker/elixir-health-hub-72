@@ -127,7 +127,7 @@ function HomePage() {
     await AuditService.log({
       actorId: user.id,
       actorName: profile?.full_name ?? "User",
-      actorRole: "user",
+      actorRole: "patient",
       patientId: user.id,
       action,
       resource: "Emergency",
@@ -177,7 +177,7 @@ function HomePage() {
         </button>
       </div>
 
-      {role !== "user" && (
+      {role !== "patient" && (
         <Link
           to={role === "doctor" ? "/app/doctor" : "/app/admin"}
           className="flex items-center gap-3 rounded-2xl border bg-card p-4 transition-colors hover:bg-accent"

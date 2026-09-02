@@ -33,7 +33,7 @@ const schema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-const ROLES = ["user", "doctor", "admin"] as const;
+const ROLES = ["patient", "doctor", "admin"] as const;
 
 
 /** The destination is decided from the server-verified role, never from client state. */
@@ -53,7 +53,7 @@ async function landingRoute(): Promise<"/app" | "/doctor" | "/app/admin"> {
 function LoginPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
-  const [role, setRole] = useState<AuthService.AppRole>("user");
+  const [role, setRole] = useState<AuthService.AppRole>("patient");
   const [remember, setRemember] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);

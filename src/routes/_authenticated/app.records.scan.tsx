@@ -164,7 +164,7 @@ function ScanPage() {
       await AuditService.log({
         actorId: user.id,
         actorName: profile?.full_name ?? "User",
-        actorRole: "user",
+        actorRole: "patient",
         patientId: user.id,
         action: "Added medical record from Smart Scan",
         resource: form.title,

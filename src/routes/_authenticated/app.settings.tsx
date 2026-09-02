@@ -83,7 +83,7 @@ function SettingsPage() {
                 <Row label="Email" value={user?.email ?? "—"} />
                 <Row label="Universal User ID" value={profile?.universal_id ?? "—"} />
                 <Row label="ABHA ID" value={profile?.abha_id ?? "Not linked"} />
-                <Row label="Role" value={role === "user" ? "User" : (role ?? "—")} />
+                <Row label="Role" value={role === "patient" ? "User" : (role ?? "—")} />
                 <Row label="Phone" value={profile?.phone ?? "—"} />
               </dl>
             </section>

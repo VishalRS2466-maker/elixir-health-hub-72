@@ -159,7 +159,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const unread = (notifications.data ?? []).filter((n) => !n.read).length;
 
   const groups = role === "doctor" ? DOCTOR_GROUPS : role === "admin" ? ADMIN_GROUPS : PATIENT_GROUPS;
-  const bottomNav = role === "user" ? PATIENT_MAIN : groups[0]!.items.slice(0, 5);
+  const bottomNav = role === "patient" ? PATIENT_MAIN : groups[0]!.items.slice(0, 5);
 
   async function handleSignOut() {
     await queryClient.cancelQueries();
