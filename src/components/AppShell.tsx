@@ -200,7 +200,6 @@ export function AppShell({ children }: { children: ReactNode }) {
             variant="ghost"
             size="icon"
             aria-label={t("nav.closeMenu")}
-            className="lg:hidden"
             onClick={() => setNavOpen(false)}
           >
             <X className="h-5 w-5" />
