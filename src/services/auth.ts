@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { getMyRole, provisionMyAccount } from "@/lib/roles.functions";
 
 export type AppRole = "patient" | "doctor" | "admin";
 
@@ -30,7 +31,7 @@ export async function signUp(opts: {
   return { needsConfirmation: false };
 }
 
-/** Creates the profile + role rows for the currently signed-in user. */
+/** Creates the profile + role rows for the currently signed-in user (server-verified). */
 export async function bootstrapAccount(opts: {
   fullName: string;
   email: string;
@@ -39,45 +40,15 @@ export async function bootstrapAccount(opts: {
   phone?: string;
   dob?: string;
 }) {
-  const { data: userData } = await supabase.auth.getUser();
-  const user = userData.user;
-  if (!user) throw new Error("Not signed in");
-
-  const { data: existing } = await supabase
-    .from("profiles")
-    .select("id")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  await supabase.from("user_roles").insert({ user_id: user.id, role: opts.role });
-
-  if (!existing) {
-    // The database seeds realistic demo health data for new users.
-    const { error } = await supabase.from("profiles").insert({
-      id: user.id,
-      full_name: opts.fullName,
-      email: opts.email,
-      ...(opts.phone ? { phone: opts.phone } : {}),
-      ...(opts.dob ? { dob: opts.dob } : {}),
-    });
-    if (error) throw error;
-  }
-
-  if (opts.role === "doctor") {
-    await supabase.from("doctors").insert({
-      user_id: user.id,
-      full_name: opts.fullName,
-      specialty: opts.specialty || "General Medicine",
-      is_demo: false,
-    });
-  }
+  await provisionMyAccount({ data: opts });
 }
 
 export async function signOut() {
   await supabase.auth.signOut();
 }
 
-export async function getRoles(userId: string): Promise<AppRole[]> {
-  const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId);
-  return (data ?? []).map((r) => r.role as AppRole);
+/** Roles come from the server, verified against the database. */
+export async function getRoles(_userId?: string): Promise<AppRole[]> {
+  const res = await getMyRole();
+  return res.roles;
 }
