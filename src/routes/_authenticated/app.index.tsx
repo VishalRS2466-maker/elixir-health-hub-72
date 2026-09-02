@@ -303,7 +303,8 @@ function HomePage() {
             </div>
           )}
         </div>
-      </section>
+      </div>
+      </div>
 
       {/* AI assistant entry */}
       <button
