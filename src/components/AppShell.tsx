@@ -189,11 +189,13 @@ export function AppShell({ children }: { children: ReactNode }) {
         )}
       >
         <div className="flex items-center justify-between border-b px-4 py-3.5">
-          <Link to="/app" onClick={() => setNavOpen(false)} className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <FileHeart className="h-5 w-5" />
-            </span>
-            <span className="text-lg font-semibold tracking-tight">ELIXIR</span>
+          <Link
+            to="/app"
+            onClick={() => setNavOpen(false)}
+            aria-label="ELIXIR — Home"
+            className="rounded-md px-2 py-1 text-lg font-semibold tracking-[0.18em] transition-colors duration-200 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            ELIXIR
           </Link>
           <Button
             variant="ghost"
