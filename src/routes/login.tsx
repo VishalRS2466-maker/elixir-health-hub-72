@@ -35,6 +35,18 @@ const schema = z.object({
 
 const ROLES = ["patient", "doctor", "admin"] as const;
 
+
+async function landingRoute(): Promise<"/app" | "/doctor"> {
+  const { data } = await supabase.auth.getUser();
+  if (!data.user) return "/app";
+  try {
+    const roles = await AuthService.getRoles(data.user.id);
+    return roles.includes("doctor") && !roles.includes("admin") ? "/doctor" : "/app";
+  } catch {
+    return "/app";
+  }
+}
+
 function LoginPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
@@ -58,7 +70,7 @@ function LoginPage() {
     try {
       await signInWithPasskey(form.email);
       toast.success("Signed in with passkey");
-      navigate({ to: "/app", replace: true });
+      navigate({ to: await landingRoute(), replace: true });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Passkey sign-in failed";
       setError(/NotAllowed|abort/i.test(message) ? "Device verification was cancelled." : message);
@@ -69,7 +81,7 @@ function LoginPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/app", replace: true });
+      if (data.session) void landingRoute().then((to) => navigate({ to, replace: true }));
     });
     const saved = typeof window !== "undefined" ? window.localStorage.getItem("elixir.email") : null;
     if (saved) setForm((f) => ({ ...f, email: saved }));
@@ -103,7 +115,7 @@ function LoginPage() {
         }
       }
       toast.success("Signed in");
-      navigate({ to: "/app", replace: true });
+      navigate({ to: await landingRoute(), replace: true });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong";
       setError(message);
