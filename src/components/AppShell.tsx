@@ -240,7 +240,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             aria-label={t("nav.openMenu")}
             aria-expanded={navOpen}
             aria-controls="app-sidebar"
-            className="min-h-11 min-w-11 lg:hidden"
+            className="min-h-11 min-w-11"
             onClick={() => setNavOpen(true)}
           >
             <Menu className="h-5 w-5" />
