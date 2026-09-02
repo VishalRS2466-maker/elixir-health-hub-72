@@ -47,7 +47,7 @@ Always end with one line: "This is general information, not medical advice — p
 const DOCTOR_PROMPT = `You are the ELIXIR AI Clinical Assistant supporting a verified clinician.
 
 You HELP by:
-- summarising an authorised patient's history and timeline
+- summarising an authorised user's history and timeline
 - summarising and comparing authorised lab/scan reports
 - organising clinical information and highlighting notable values or gaps
 
@@ -125,7 +125,7 @@ async function callModel(system: string, contextBlock: string, messages: Msg[]) 
   }
 }
 
-/** Patient assistant — context is retrieved from the caller's OWN data only. */
+/** User assistant — context is retrieved from the caller's OWN data only. */
 export const aiChat = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: AiChatInput) => sanitize(input))
@@ -177,13 +177,13 @@ export const aiChat = createServerFn({ method: "POST" })
     return { ...result, sources: retrieved.sources };
   });
 
-/** Clinical assistant — requires the doctor role AND active consent for the patient. */
+/** Clinical assistant — requires the doctor role AND active consent for the user. */
 export const aiDoctorChat = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: AiDoctorChatInput) => {
     const base = sanitize(input);
     const patientId = String(input?.patientId ?? "");
-    if (!/^[0-9a-f-]{36}$/i.test(patientId)) throw new Error("A valid patient is required");
+    if (!/^[0-9a-f-]{36}$/i.test(patientId)) throw new Error("A valid user is required");
     return { ...base, patientId };
   })
   .handler(async ({ data, context }) => {
@@ -215,7 +215,7 @@ export const aiDoctorChat = createServerFn({ method: "POST" })
     if (!active || active.length === 0) {
       return {
         ok: false as const,
-        reply: "You do not have active consent for this patient. Request access before using the clinical assistant.",
+        reply: "You do not have active consent for this user. Request access before using the clinical assistant.",
         sources: [],
       };
     }
@@ -230,7 +230,7 @@ export const aiDoctorChat = createServerFn({ method: "POST" })
     }
 
     const contextBlock = [
-      `Consented data categories for this patient: ${active.join(", ")}. Anything outside this list is NOT available.`,
+      `Consented data categories for this user: ${active.join(", ")}. Anything outside this list is NOT available.`,
       retrieved.text
         ? `AUTHORISED PATIENT DATA (consent-verified before retrieval):\n${retrieved.text}`
         : "No consented records matched this question. Say so plainly and suggest what category of access may be needed.",

@@ -14,10 +14,10 @@ export const Route = createFileRoute("/_authenticated/doctor/patients/")({
 
 function PatientsPage() {
   const fn = useServerFn(doctorPatients);
-  const patients = useQuery({ queryKey: ["doctor-patients"], queryFn: () => fn({}) });
+  const users = useQuery({ queryKey: ["doctor-users"], queryFn: () => fn({}) });
   const [q, setQ] = useState("");
 
-  const list = (patients.data ?? []).filter(
+  const list = (users.data ?? []).filter(
     (p) =>
       !q.trim() ||
       p.full_name.toLowerCase().includes(q.toLowerCase()) ||
@@ -27,9 +27,9 @@ function PatientsPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold">My patients</h1>
+        <h1 className="text-2xl font-semibold">My users</h1>
         <p className="text-sm text-muted-foreground">
-          Only patients who granted you active consent appear here.
+          Only users who granted you active consent appear here.
         </p>
       </div>
       <Input
@@ -38,12 +38,12 @@ function PatientsPage() {
         onChange={(e) => setQ(e.target.value)}
         className="max-w-sm"
       />
-      {patients.isLoading && <div className="h-32 animate-pulse rounded-2xl bg-muted" />}
-      {!patients.isLoading && list.length === 0 && (
+      {users.isLoading && <div className="h-32 animate-pulse rounded-2xl bg-muted" />}
+      {!users.isLoading && list.length === 0 && (
         <EmptyState
           icon={Users}
-          title="No authorized patients"
-          description="Request access from the Patient Requests page. Access appears here once approved."
+          title="No authorized users"
+          description="Request access from the User Requests page. Access appears here once approved."
         />
       )}
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">

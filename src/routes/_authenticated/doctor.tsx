@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_authenticated/doctor")({
       { title: "Doctor Portal · ELIXIR" },
       { name: "description", content: "Clinical dashboard for verified ELIXIR doctors." },
       { property: "og:title", content: "Doctor Portal · ELIXIR" },
-      { property: "og:description", content: "Consent-gated patient access, appointments and clinical AI support." },
+      { property: "og:description", content: "Consent-gated user access, appointments and clinical AI support." },
       { name: "robots", content: "noindex" },
     ],
   }),

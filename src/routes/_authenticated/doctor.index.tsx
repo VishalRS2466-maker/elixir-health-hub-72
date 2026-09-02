@@ -30,7 +30,7 @@ function DoctorDashboard() {
   const overviewFn = useServerFn(doctorOverview);
   const patientsFn = useServerFn(doctorPatients);
   const overview = useQuery({ queryKey: ["doctor-overview"], queryFn: () => overviewFn({}) });
-  const patients = useQuery({ queryKey: ["doctor-patients"], queryFn: () => patientsFn({}) });
+  const users = useQuery({ queryKey: ["doctor-users"], queryFn: () => patientsFn({}) });
 
   const appts = overview.data?.appointments ?? [];
   const today = appts.filter((a) => isToday(a.slot_at) && a.status !== "cancelled");
@@ -44,7 +44,7 @@ function DoctorDashboard() {
       <div>
         <h1 className="text-2xl font-semibold">Doctor dashboard</h1>
         <p className="text-sm text-muted-foreground">
-          {overview.data?.doctor?.specialty ?? "Clinician"} · Patient data is visible only with active consent.
+          {overview.data?.doctor?.specialty ?? "Clinician"} · User data is visible only with active consent.
         </p>
       </div>
 
@@ -52,7 +52,7 @@ function DoctorDashboard() {
         <Stat icon={CalendarDays} label="Today's appointments" value={today.length} />
         <Stat icon={CalendarDays} label="Upcoming appointments" value={upcoming.length} />
         <Stat icon={FileHeart} label="Pending consent requests" value={pending.length} />
-        <Stat icon={Users} label="Consented patients" value={patients.data?.length ?? 0} />
+        <Stat icon={Users} label="Consented users" value={users.data?.length ?? 0} />
       </div>
 
       <div className="grid gap-5 lg:grid-cols-3">
@@ -106,8 +106,8 @@ function DoctorDashboard() {
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-lg font-semibold">Recently authorized patients</h2>
-            {(patients.data ?? []).slice(0, 5).map((p) => (
+            <h2 className="text-lg font-semibold">Recently authorized users</h2>
+            {(users.data ?? []).slice(0, 5).map((p) => (
               <Link
                 key={p.patient_id}
                 to="/doctor/patients/$patientId"
@@ -121,7 +121,7 @@ function DoctorDashboard() {
                 </p>
               </Link>
             ))}
-            {(patients.data ?? []).length === 0 && (
+            {(users.data ?? []).length === 0 && (
               <p className="text-sm text-muted-foreground">No active consent yet.</p>
             )}
           </section>

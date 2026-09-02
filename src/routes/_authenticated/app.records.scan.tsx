@@ -389,7 +389,7 @@ function ReviewForm({
             <div className="space-y-1.5">
               <Label htmlFor="s-user">User name</Label>
               <Input
-                id="s-patient"
+                id="s-user"
                 value={form.patient_name}
                 onChange={(e) => set("patient_name", e.target.value)}
               />

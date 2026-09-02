@@ -24,7 +24,7 @@ function DoctorConsent() {
       <div>
         <h1 className="text-2xl font-semibold">Consent management</h1>
         <p className="text-sm text-muted-foreground">
-          Consent is granted, scoped and revoked by the patient. You can only see what is currently active.
+          Consent is granted, scoped and revoked by the user. You can only see what is currently active.
         </p>
       </div>
 

@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_authenticated/doctor/ai")({
 type Msg = { role: "user" | "assistant"; content: string; sources?: string[] };
 
 const PROMPTS = [
-  "Summarize this patient's recent medical history",
+  "Summarize this user's recent medical history",
   "Compare the two latest lab reports",
   "List current medications and possible interactions to check",
   "Summarize the last consultation and follow-up plan",
@@ -26,14 +26,14 @@ const PROMPTS = [
 function DoctorAi() {
   const patientsFn = useServerFn(doctorPatients);
   const chat = useServerFn(aiDoctorChat);
-  const patients = useQuery({ queryKey: ["doctor-patients"], queryFn: () => patientsFn({}) });
+  const users = useQuery({ queryKey: ["doctor-users"], queryFn: () => patientsFn({}) });
   const [patientId, setPatientId] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
-  const list = patients.data ?? [];
+  const list = users.data ?? [];
   const selected = list.find((p) => p.patient_id === patientId);
 
   useEffect(() => {
@@ -68,13 +68,13 @@ function DoctorAi() {
       <div>
         <h1 className="text-2xl font-semibold">AI clinical assistant</h1>
         <p className="text-sm text-muted-foreground">
-          Decision support only. It reads exactly what the selected patient consented to — nothing else.
+          Decision support only. It reads exactly what the selected user consented to — nothing else.
         </p>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[320px_1fr]">
         <aside className="card-soft space-y-3 p-4">
-          <p className="text-sm font-semibold">Authorized patient</p>
+          <p className="text-sm font-semibold">Authorized user</p>
           <select
             value={patientId}
             onChange={(e) => {
@@ -83,7 +83,7 @@ function DoctorAi() {
             }}
             className="h-10 w-full rounded-xl border bg-background px-3 text-sm"
           >
-            <option value="">Select a patient…</option>
+            <option value="">Select a user…</option>
             {list.map((p) => (
               <option key={p.patient_id} value={p.patient_id}>
                 {p.full_name} · {p.universal_id}
@@ -92,7 +92,7 @@ function DoctorAi() {
           </select>
           {list.length === 0 && (
             <p className="text-xs text-muted-foreground">
-              No patient has granted you consent yet. Request access from Patient Requests.
+              No user has granted you consent yet. Request access from User Requests.
             </p>
           )}
           {selected && (
@@ -122,7 +122,7 @@ function DoctorAi() {
           <div className="flex-1 space-y-3 overflow-y-auto p-4">
             <p className="rounded-2xl bg-muted px-4 py-3 text-sm">
               <Bot className="mr-2 inline h-4 w-4" />
-              Ask about the selected patient's consented records. Output is informational support and does not
+              Ask about the selected user's consented records. Output is informational support and does not
               replace clinical judgement.
             </p>
             {messages.map((m, i) => (
@@ -153,7 +153,7 @@ function DoctorAi() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask about this patient's consented records…"
+              placeholder="Ask about this user's consented records…"
               className="rounded-full"
               disabled={!patientId}
             />

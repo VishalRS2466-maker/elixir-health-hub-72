@@ -106,16 +106,23 @@ function LoginPage() {
 
       const { data } = await supabase.auth.getUser();
       if (data.user) {
-        const roles = await AuthService.getRoles();
-        if (roles.length === 0) {
-          // Server decides the role from the signup metadata; the picker above is only a hint.
-          await AuthService.bootstrapAccount({
-            fullName: data.user.user_metadata["full_name"] ?? "User",
-            email: form.email,
-            role,
-          });
-        } else if (!roles.includes(role)) {
-          toast.message(`Signed in with your ${roles[0]} access.`);
+        try {
+          const roles = await AuthService.getRoles();
+          if (roles.length === 0) {
+            // Server decides the role from the signup metadata; the picker above is only a hint.
+            await AuthService.bootstrapAccount({
+              fullName: data.user.user_metadata["full_name"] ?? "User",
+              email: form.email,
+              role,
+            });
+          } else if (!roles.includes(role)) {
+            toast.message(
+              `Signed in with your ${roles[0] === "patient" ? "user" : roles[0]} access.`,
+            );
+          }
+        } catch (provisionErr) {
+          // Sign-in already succeeded — a provisioning hiccup must not surface as a login error.
+          console.warn("Account provisioning skipped:", provisionErr);
         }
       }
       toast.success("Signed in");
@@ -168,7 +175,7 @@ function LoginPage() {
                       role === r ? "border-primary bg-brand-soft" : "bg-background"
                     }`}
                   >
-                    {r}
+                    {r === "patient" ? "User" : r}
                   </button>
                 ))}
               </div>
