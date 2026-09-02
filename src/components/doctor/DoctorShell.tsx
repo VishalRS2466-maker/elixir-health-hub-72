@@ -60,11 +60,16 @@ export function DoctorShell({ children }: { children: ReactNode }) {
           </div>
           <div className="ml-auto flex items-center gap-2">
             <Link
-              to="/doctor"
+              to="/doctor/profile"
               className="hidden items-center gap-2 rounded-full bg-slate-800 px-3 py-1.5 text-xs text-slate-300 sm:flex"
             >
-              <Bell className="h-3.5 w-3.5" />
-              {profile?.full_name ?? "Doctor"}
+              <UserRound className="h-3.5 w-3.5" />
+              <span className="max-w-[180px] truncate">
+                Dr. {(profile?.full_name ?? "Doctor").replace(/^Dr\.?\s*/i, "")}
+              </span>
+              <span className="rounded-full bg-primary/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+                Doctor
+              </span>
             </Link>
             <Button
               size="sm"

@@ -89,7 +89,11 @@ function RegisterPage() {
         return;
       }
       toast.success("Welcome to ELIXIR");
-      navigate({ to: "/app", replace: true });
+      const roles = await AuthService.getRoles();
+      navigate({
+        to: roles.includes("admin") ? "/app/admin" : roles.includes("doctor") ? "/doctor" : "/app",
+        replace: true,
+      });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong";
       setError(message);
