@@ -172,7 +172,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         onClick={() => setNavOpen(false)}
         aria-hidden={!navOpen}
         className={cn(
-          "fixed inset-0 z-40 bg-foreground/40 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden",
+          "fixed inset-0 z-40 bg-foreground/40 backdrop-blur-[2px] transition-opacity duration-300",
           navOpen ? "opacity-100" : "pointer-events-none opacity-0",
         )}
       />
@@ -182,8 +182,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         id="app-sidebar"
         aria-label={t("nav.menu")}
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-[264px] max-w-[85vw] flex-col border-r bg-card shadow-lift",
-          "transition-transform duration-300 ease-out lg:z-30 lg:w-[248px] lg:translate-x-0 lg:shadow-none xl:w-[264px]",
+          "fixed inset-y-0 left-0 z-50 flex w-[280px] max-w-[85vw] flex-col border-r bg-card shadow-lift",
+          "transition-transform duration-300 ease-out",
           navOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
