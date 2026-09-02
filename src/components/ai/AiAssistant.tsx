@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
-type Msg = { role: "user" | "assistant"; content: string };
+type Msg = { role: "user" | "assistant"; content: string; sources?: string[] };
 type AiContext = { label: string; data?: string | undefined } | null;
 
 type AiApi = {
@@ -52,7 +52,7 @@ export function AiAssistantProvider({ children }: { children: ReactNode }) {
           contextData: context?.data,
         },
       });
-      setMessages([...next, { role: "assistant", content: res.reply }]);
+      setMessages([...next, { role: "assistant", content: res.reply, sources: res.sources }]);
     } catch {
       setMessages([
         ...next,
@@ -120,16 +120,20 @@ export function AiAssistantProvider({ children }: { children: ReactNode }) {
                 </div>
               )}
               {messages.map((m, i) => (
-                <div
-                  key={i}
-                  className={cn(
-                    "max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm",
-                    m.role === "user"
-                      ? "ml-auto bg-primary text-primary-foreground"
-                      : "bg-muted text-foreground",
+                <div key={i} className="space-y-1">
+                  <div
+                    className={cn(
+                      "max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm",
+                      m.role === "user"
+                        ? "ml-auto bg-primary text-primary-foreground"
+                        : "bg-muted text-foreground",
+                    )}
+                  >
+                    {m.content}
+                  </div>
+                  {m.sources && m.sources.length > 0 && (
+                    <p className="text-xs text-muted-foreground">Based on: {m.sources.join(" · ")}</p>
                   )}
-                >
-                  {m.content}
                 </div>
               ))}
               {busy && (
