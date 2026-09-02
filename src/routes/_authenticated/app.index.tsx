@@ -12,11 +12,14 @@ import {
   Pill,
   Sparkles,
   Stethoscope,
+  ShieldAlert,
+  Clock,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useSession } from "@/hooks/useSession";
 import * as ReminderService from "@/services/reminders";
 import * as BookingService from "@/services/bookings";
+import * as ConsentService from "@/services/consent";
 import * as MedicalRecordService from "@/services/records";
 import * as EmergencyService from "@/services/emergency";
 import * as AuditService from "@/services/audit";
@@ -84,12 +87,23 @@ function HomePage() {
     queryFn: () => EmergencyService.listContacts(user!.id),
     enabled: !!user,
   });
+  const consent = useQuery({
+    queryKey: ["consent-requests", user?.id],
+    queryFn: () => ConsentService.listPatientRequests(user!.id),
+    enabled: !!user,
+  });
 
+  const pendingConsent = (consent.data ?? []).filter((r) => r.status === "pending");
+  const todayReminders = (reminders.data ?? []).filter((r) => {
+    const d = new Date(r.scheduled_at);
+    const now = new Date();
+    return d.toDateString() === now.toDateString();
+  });
   const nextReminder = (reminders.data ?? []).find((r) => r.status === "upcoming");
-  const nextAppointment = (appointments.data ?? []).find(
-    (a) => new Date(a.slot_at) > new Date() && a.status !== "cancelled",
-  );
-  const recentRecords = (records.data ?? []).slice(0, 3);
+  const upcomingAppointments = (appointments.data ?? [])
+    .filter((a) => new Date(a.slot_at) > new Date() && a.status !== "cancelled")
+    .slice(0, 2);
+  const recentRecords = (records.data ?? []).slice(0, 5);
 
   async function logSos(action: string) {
     if (!user) return;
@@ -113,7 +127,7 @@ function HomePage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-2xl space-y-6">
+    <div className="mx-auto w-full max-w-5xl space-y-5">
       {/* Header: greeting, ID, compact SOS */}
       <div className="flex items-start justify-between gap-3">
         <div>
@@ -152,6 +166,23 @@ function HomePage() {
         </Link>
       )}
 
+      {/* Quick access: light icon tiles */}
+      <section className="grid grid-cols-3 gap-4 sm:grid-cols-6">
+        {QUICK.map((q) => (
+          <Link key={q.to} to={q.to} className="group flex flex-col items-center gap-2">
+            <span
+              className={`flex h-14 w-14 items-center justify-center rounded-2xl border border-transparent ${q.tone} text-primary transition-colors group-hover:border-primary/20 group-hover:bg-primary/10`}
+            >
+              <q.icon className="h-6 w-6" />
+            </span>
+            <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground">{q.label}</span>
+          </Link>
+        ))}
+      </section>
+
+      {/* Main content: packed two-column grid on wide screens */}
+      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-5">
+        <div className="space-y-5 lg:col-span-3">
       {/* Next medicine: primary focus */}
       <section className="rounded-3xl border bg-card p-6 shadow-sm">
         {nextReminder ? (
@@ -214,22 +245,57 @@ function HomePage() {
         )}
       </section>
 
-      {/* Quick access: light icon tiles */}
-      <section className="grid grid-cols-3 gap-4 sm:grid-cols-6">
-        {QUICK.map((q) => (
-          <Link key={q.to} to={q.to} className="group flex flex-col items-center gap-2">
-            <span
-              className={`flex h-14 w-14 items-center justify-center rounded-2xl border border-transparent ${q.tone} text-primary transition-colors group-hover:border-primary/20 group-hover:bg-primary/10`}
-            >
-              <q.icon className="h-6 w-6" />
-            </span>
-            <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground">{q.label}</span>
+      {/* Today's schedule */}
+      <section className="rounded-3xl border bg-card p-6 shadow-sm">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-sm font-bold">Today's schedule</h3>
+          <Link to="/app/medicines" className="text-xs font-semibold text-primary">
+            Manage
           </Link>
-        ))}
+        </div>
+        {todayReminders.length > 0 ? (
+          <ul className="divide-y">
+            {todayReminders.map((r) => (
+              <li key={r.id} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-soft">
+                  <Clock className="h-4 w-4 text-primary" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold">{r.medicines?.name}</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {r.medicines?.dosage} ·{" "}
+                    {new Date(r.scheduled_at).toLocaleTimeString(undefined, {
+                      hour: "numeric",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                </div>
+                {r.status === "upcoming" ? (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="shrink-0 rounded-xl border-transparent bg-muted hover:bg-accent"
+                    onClick={() => act(r.id, "taken")}
+                  >
+                    Taken
+                  </Button>
+                ) : (
+                  <StatusChip status={r.status} />
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="flex items-center gap-3 text-muted-foreground">
+            <Pill className="h-5 w-5" />
+            <p className="text-xs">Nothing scheduled today.</p>
+          </div>
+        )}
       </section>
+        </div>
 
-      {/* Secondary info: appointment + records side by side */}
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      {/* Secondary info: appointment + records stacked */}
+      <div className="space-y-5 lg:col-span-2">
         <div className="rounded-2xl border bg-card p-5">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-sm font-bold">Upcoming</h3>
@@ -237,30 +303,32 @@ function HomePage() {
               Book
             </Link>
           </div>
-          {nextAppointment ? (
-            <div className="flex items-center gap-4">
-              <div className="min-w-[3.5rem] rounded-xl bg-sage-soft p-2 text-center">
-                <span className="block text-[10px] font-bold uppercase text-primary">
-                  {new Date(nextAppointment.slot_at).toLocaleString(undefined, { month: "short" })}
-                </span>
-                <span className="block text-lg font-bold leading-tight">
-                  {new Date(nextAppointment.slot_at).getDate()}
-                </span>
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold">
-                  {nextAppointment.doctors?.full_name}
-                </p>
-                <p className="truncate text-xs text-muted-foreground">
-                  {nextAppointment.doctors?.specialty} ·{" "}
-                  {new Date(nextAppointment.slot_at).toLocaleTimeString(undefined, {
-                    hour: "numeric",
-                    minute: "2-digit",
-                  })}
-                </p>
-              </div>
-              <StatusChip status={nextAppointment.status} />
-            </div>
+          {upcomingAppointments.length > 0 ? (
+            <ul className="space-y-3">
+              {upcomingAppointments.map((a) => (
+                <li key={a.id} className="flex items-center gap-4">
+                  <div className="min-w-[3.5rem] rounded-xl bg-sage-soft p-2 text-center">
+                    <span className="block text-[10px] font-bold uppercase text-primary">
+                      {new Date(a.slot_at).toLocaleString(undefined, { month: "short" })}
+                    </span>
+                    <span className="block text-lg font-bold leading-tight">
+                      {new Date(a.slot_at).getDate()}
+                    </span>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold">{a.doctors?.full_name}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {a.doctors?.specialty} ·{" "}
+                      {new Date(a.slot_at).toLocaleTimeString(undefined, {
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
+                  <StatusChip status={a.status} />
+                </li>
+              ))}
+            </ul>
           ) : (
             <div className="flex items-center gap-3 text-muted-foreground">
               <CalendarClock className="h-5 w-5" />
@@ -299,7 +367,29 @@ function HomePage() {
             </div>
           )}
         </div>
-      </section>
+      </div>
+      </div>
+
+      {/* Pending consent strip */}
+      {pendingConsent.length > 0 && (
+        <Link
+          to="/app/consent"
+          className="flex items-center gap-3 rounded-2xl border border-primary/20 bg-brand-soft p-4 transition-colors hover:bg-primary/10"
+        >
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+            <ShieldAlert className="h-5 w-5 text-primary" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold">
+              {pendingConsent.length} access {pendingConsent.length === 1 ? "request" : "requests"} waiting
+            </p>
+            <p className="text-xs text-muted-foreground">
+              A doctor is asking to view your records — review and respond
+            </p>
+          </div>
+          <span className="shrink-0 text-xs font-semibold text-primary">Review</span>
+        </Link>
+      )}
 
       {/* AI assistant entry */}
       <button
