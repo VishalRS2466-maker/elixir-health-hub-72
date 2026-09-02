@@ -175,7 +175,7 @@ function LoginPage() {
                       role === r ? "border-primary bg-brand-soft" : "bg-background"
                     }`}
                   >
-                    {r}
+                    {r === "patient" ? "User" : r}
                   </button>
                 ))}
               </div>
