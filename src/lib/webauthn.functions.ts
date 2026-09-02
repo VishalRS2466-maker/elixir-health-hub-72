@@ -334,7 +334,7 @@ export const finishReauth = createServerFn({ method: "POST" })
     try {
       result = await verifyAssertion(data.response, "reauth");
     } catch (err) {
-      await logEvent(context.userId, "reauth_failed", data.reason ?? null);
+      await logEvent(context.userId, "reauth_failed", data.reason);
       throw err;
     }
     if (result.userId !== context.userId) throw new Error("Passkey does not belong to this account");
