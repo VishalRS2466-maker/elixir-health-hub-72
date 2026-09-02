@@ -52,6 +52,31 @@ export async function setReminderStatus(id: string, status: "taken" | "skipped" 
   if (error) throw error;
 }
 
+/** Create a log row on the fly for a medicine that has none today, then mark it. */
+export async function markAdhoc(
+  medicineId: string,
+  patientId: string,
+  scheduledAt: Date,
+  status: "taken" | "skipped",
+) {
+  const { error } = await supabase.from("reminder_logs").insert({
+    medicine_id: medicineId,
+    patient_id: patientId,
+    scheduled_at: scheduledAt.toISOString(),
+    status,
+    acted_at: new Date().toISOString(),
+  });
+  if (error) throw error;
+}
+
+/** Today's scheduled time (HH:mm) as a Date for today. */
+export function todayAt(time: string) {
+  const [h, m] = time.split(":").map(Number);
+  const d = new Date();
+  d.setHours(h ?? 9, m ?? 0, 0, 0);
+  return d;
+}
+
 export function nextOccurrence(time: string) {
   const [h, m] = time.split(":").map(Number);
   const d = new Date();

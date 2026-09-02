@@ -72,6 +72,11 @@ function HomePage() {
     queryFn: () => ReminderService.listReminders(user!.id),
     enabled: !!user,
   });
+  const medicines = useQuery({
+    queryKey: ["medicines", user?.id],
+    queryFn: () => ReminderService.listMedicines(user!.id),
+    enabled: !!user,
+  });
   const appointments = useQuery({
     queryKey: ["appointments", user?.id],
     queryFn: () => BookingService.listAppointments(user!.id),
@@ -99,7 +104,19 @@ function HomePage() {
     const now = new Date();
     return d.toDateString() === now.toDateString();
   });
-  const nextReminder = (reminders.data ?? []).find((r) => r.status === "upcoming");
+
+  // Every medicine being taken today, merged with today's log (if any)
+  const todaySchedule = (medicines.data ?? [])
+    .map((m) => {
+      const log = todayReminders.find((l) => l.medicine_id === m.id) ?? null;
+      const at = log ? new Date(log.scheduled_at) : ReminderService.todayAt(m.reminder_time);
+      return { medicine: m, log, at };
+    })
+    .sort((a, b) => a.at.getTime() - b.at.getTime());
+
+  const pendingDoses = todaySchedule.filter((e) => !e.log || e.log.status === "upcoming");
+  const nextDose =
+    pendingDoses.find((e) => e.at.getTime() >= Date.now()) ?? pendingDoses[0] ?? null;
   const upcomingAppointments = (appointments.data ?? [])
     .filter((a) => new Date(a.slot_at) > new Date() && a.status !== "cancelled")
     .slice(0, 2);
@@ -118,8 +135,15 @@ function HomePage() {
     });
   }
 
-  async function act(id: string, status: "taken" | "skipped" | "snoozed") {
-    await ReminderService.setReminderStatus(id, status);
+  async function act(entry: (typeof todaySchedule)[number], status: "taken" | "skipped" | "snoozed") {
+    if (!user) return;
+    if (entry.log) {
+      await ReminderService.setReminderStatus(entry.log.id, status);
+    } else if (status !== "snoozed") {
+      await ReminderService.markAdhoc(entry.medicine.id, user.id, entry.at, status);
+    } else {
+      return;
+    }
     await qc.invalidateQueries({ queryKey: ["reminders", user?.id] });
     toast.success(
       status === "taken" ? "Marked as taken" : status === "skipped" ? "Marked as skipped" : "Snoozed for 15 minutes",
@@ -185,7 +209,7 @@ function HomePage() {
         <div className="space-y-5 lg:col-span-3 xl:col-span-2">
       {/* Next medicine: primary focus */}
       <section className="rounded-3xl border bg-card p-6 shadow-sm">
-        {nextReminder ? (
+        {nextDose ? (
           <>
             <div className="mb-4 flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
@@ -194,35 +218,35 @@ function HomePage() {
                 </span>
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wider text-primary">Next medicine</p>
-                  <h2 className="text-lg font-bold">{nextReminder.medicines?.name}</h2>
-                  <p className="text-xs text-muted-foreground">{nextReminder.medicines?.dosage}</p>
+                  <h2 className="text-lg font-bold">{nextDose.medicine.name}</h2>
+                  <p className="text-xs text-muted-foreground">{nextDose.medicine.dosage}</p>
                 </div>
               </div>
               <div className="text-right">
                 <p className="text-lg font-bold">
-                  {new Date(nextReminder.scheduled_at).toLocaleTimeString(undefined, {
+                  {nextDose.at.toLocaleTimeString(undefined, {
                     hour: "numeric",
                     minute: "2-digit",
                   })}
                 </p>
-                <p className="text-xs text-muted-foreground">{timeUntil(nextReminder.scheduled_at)}</p>
+                <p className="text-xs text-muted-foreground">{timeUntil(nextDose.at.toISOString())}</p>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-3">
-              <Button className="rounded-2xl py-3 shadow-md active:scale-95" onClick={() => act(nextReminder.id, "taken")}>
+              <Button className="rounded-2xl py-3 shadow-md active:scale-95" onClick={() => act(nextDose, "taken")}>
                 Taken
               </Button>
               <Button
                 variant="outline"
                 className="rounded-2xl border-transparent bg-muted py-3 hover:bg-accent"
-                onClick={() => act(nextReminder.id, "skipped")}
+                onClick={() => act(nextDose, "skipped")}
               >
                 Skip
               </Button>
               <Button
                 variant="outline"
                 className="rounded-2xl border-transparent bg-muted py-3 hover:bg-accent"
-                onClick={() => act(nextReminder.id, "snoozed")}
+                onClick={() => act(nextDose, "snoozed")}
               >
                 Snooze
               </Button>
@@ -231,6 +255,18 @@ function HomePage() {
               ELIXIR only records what you confirm here — it cannot detect whether a medicine was taken.
             </p>
           </>
+        ) : todaySchedule.length > 0 ? (
+          <div className="flex items-center gap-3">
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sage-soft">
+              <Pill className="h-6 w-6 text-primary" />
+            </span>
+            <div>
+              <h2 className="text-lg font-bold">All done for today</h2>
+              <p className="text-xs text-muted-foreground">
+                You've acted on every medicine scheduled for today.
+              </p>
+            </div>
+          </div>
         ) : (
           <EmptyState
             icon={Pill}
@@ -253,34 +289,34 @@ function HomePage() {
             Manage
           </Link>
         </div>
-        {todayReminders.length > 0 ? (
+        {todaySchedule.length > 0 ? (
           <ul className="divide-y">
-            {todayReminders.map((r) => (
-              <li key={r.id} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
+            {todaySchedule.map((e) => (
+              <li key={e.medicine.id} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-soft">
                   <Clock className="h-4 w-4 text-primary" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold">{r.medicines?.name}</p>
+                  <p className="truncate text-sm font-semibold">{e.medicine.name}</p>
                   <p className="text-[11px] text-muted-foreground">
-                    {r.medicines?.dosage} ·{" "}
-                    {new Date(r.scheduled_at).toLocaleTimeString(undefined, {
+                    {e.medicine.dosage} ·{" "}
+                    {e.at.toLocaleTimeString(undefined, {
                       hour: "numeric",
                       minute: "2-digit",
                     })}
                   </p>
                 </div>
-                {r.status === "upcoming" ? (
+                {!e.log || e.log.status === "upcoming" ? (
                   <Button
                     size="sm"
                     variant="outline"
                     className="shrink-0 rounded-xl border-transparent bg-muted hover:bg-accent"
-                    onClick={() => act(r.id, "taken")}
+                    onClick={() => act(e, "taken")}
                   >
                     Taken
                   </Button>
                 ) : (
-                  <StatusChip status={r.status} />
+                  <StatusChip status={e.log.status} />
                 )}
               </li>
             ))}
