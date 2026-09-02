@@ -6,7 +6,7 @@
  * can replace the demo-data reads here without touching the UI.
  */
 export * as AuthService from "./auth";
-export * as PatientService from "./user";
+export * as PatientService from "./patient";
 export * as MedicalRecordService from "./records";
 export * as DirectoryService from "./directory";
 export * as BookingService from "./bookings";

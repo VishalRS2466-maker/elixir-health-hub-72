@@ -5,7 +5,7 @@ import { LogOut, Plus, Trash2, UserRound } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/useSession";
-import * as PatientService from "@/services/user";
+import * as PatientService from "@/services/patient";
 import * as EmergencyService from "@/services/emergency";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
