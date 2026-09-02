@@ -13,6 +13,8 @@ export async function signUp(opts: {
   fullName: string;
   role: AppRole;
   specialty?: string;
+  phone?: string;
+  dob?: string;
 }) {
   const { data, error } = await supabase.auth.signUp({
     email: opts.email,
@@ -34,6 +36,8 @@ export async function bootstrapAccount(opts: {
   email: string;
   role: AppRole;
   specialty?: string;
+  phone?: string;
+  dob?: string;
 }) {
   const { data: userData } = await supabase.auth.getUser();
   const user = userData.user;
@@ -49,9 +53,13 @@ export async function bootstrapAccount(opts: {
 
   if (!existing) {
     // The database seeds realistic demo health data for new patients.
-    const { error } = await supabase
-      .from("profiles")
-      .insert({ id: user.id, full_name: opts.fullName, email: opts.email });
+    const { error } = await supabase.from("profiles").insert({
+      id: user.id,
+      full_name: opts.fullName,
+      email: opts.email,
+      ...(opts.phone ? { phone: opts.phone } : {}),
+      ...(opts.dob ? { dob: opts.dob } : {}),
+    });
     if (error) throw error;
   }
 
