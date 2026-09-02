@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { SecureGate } from "@/components/security/SecureGate";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -38,7 +39,7 @@ export const Route = createFileRoute("/_authenticated/app/records/scan")({
       { property: "og:description", content: "OCR + AI extraction for prescriptions and medical reports." },
     ],
   }),
-  component: ScanPage,
+  component: ProtectedScanPage,
 });
 
 type Step = "upload" | "processing" | "review" | "saved";
@@ -635,5 +636,17 @@ function ListEditor({
         </div>
       ))}
     </div>
+  );
+}
+
+function ProtectedScanPage() {
+  return (
+    <SecureGate
+      level="sensitive"
+      title={"Scanning is protected"}
+      reason={"Verify your identity to digitise and store a new medical document."}
+    >
+      <ScanPage />
+    </SecureGate>
   );
 }
