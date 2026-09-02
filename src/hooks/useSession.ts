@@ -32,6 +32,8 @@ export function useSession() {
     queryKey: ["profile", user?.id],
     queryFn: () => PatientService.getProfile(user!.id),
     enabled: !!user,
+    staleTime: 5 * 60_000,
+    refetchOnWindowFocus: false,
   });
 
   const roles = useQuery({
