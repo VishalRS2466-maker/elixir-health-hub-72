@@ -72,6 +72,11 @@ function HomePage() {
     queryFn: () => ReminderService.listReminders(user!.id),
     enabled: !!user,
   });
+  const medicines = useQuery({
+    queryKey: ["medicines", user?.id],
+    queryFn: () => ReminderService.listMedicines(user!.id),
+    enabled: !!user,
+  });
   const appointments = useQuery({
     queryKey: ["appointments", user?.id],
     queryFn: () => BookingService.listAppointments(user!.id),
