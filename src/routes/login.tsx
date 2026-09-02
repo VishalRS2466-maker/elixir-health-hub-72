@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Loader2 } from "lucide-react";
+import { Fingerprint, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import * as AuthService from "@/services/auth";
+import { passkeySupported, signInWithPasskey } from "@/lib/passkeys";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -41,6 +42,30 @@ function LoginPage() {
   const [remember, setRemember] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [passkeyReady, setPasskeyReady] = useState(false);
+
+  useEffect(() => {
+    setPasskeyReady(passkeySupported());
+  }, []);
+
+  async function passkeyLogin() {
+    setError(null);
+    if (!z.string().email().safeParse(form.email).success) {
+      setError("Enter your email address, then sign in with your passkey");
+      return;
+    }
+    setBusy(true);
+    try {
+      await signInWithPasskey(form.email);
+      toast.success("Signed in with passkey");
+      navigate({ to: "/app", replace: true });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Passkey sign-in failed";
+      setError(/NotAllowed|abort/i.test(message) ? "Device verification was cancelled." : message);
+    } finally {
+      setBusy(false);
+    }
+  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -177,6 +202,31 @@ function LoginPage() {
               {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Login
             </Button>
+
+            {passkeyReady && (
+              <>
+                <div className="flex items-center gap-3 py-1">
+                  <span className="h-px flex-1 bg-border" />
+                  <span className="text-xs uppercase tracking-wide text-muted-foreground">or</span>
+                  <span className="h-px flex-1 bg-border" />
+                </div>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="h-12 w-full rounded-2xl"
+                  disabled={busy}
+                  onClick={passkeyLogin}
+                >
+                  <Fingerprint className="mr-2 h-5 w-5" />
+                  Sign in with Passkey
+                </Button>
+                <p className="text-center text-xs text-muted-foreground">
+                  Uses your fingerprint, face, Windows Hello or device PIN. ELIXIR never stores
+                  biometric data.
+                </p>
+              </>
+            )}
+
             <Button asChild variant="outline" className="h-12 w-full rounded-2xl">
               <Link to="/register">Create Account</Link>
             </Button>

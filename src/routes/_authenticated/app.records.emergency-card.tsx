@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { useSecurity } from "@/components/security/SecurityProvider";
 
 export const Route = createFileRoute("/_authenticated/app/records/emergency-card")({
   head: () => ({
@@ -55,9 +56,15 @@ function EmergencyCardPage() {
   const data = card.data;
   const visible = data?.visible_fields ?? [];
   const primary = (contacts.data ?? [])[0];
+  const { requireAuth } = useSecurity();
 
   async function toggleField(key: string, on: boolean) {
     if (!user || !data) return;
+    const verified = await requireAuth({
+      level: "sensitive",
+      reason: "Confirm your identity to change what your emergency card reveals.",
+    });
+    if (!verified) return;
     const next = on ? [...visible, key] : visible.filter((f) => f !== key);
     await EmergencyService.updateCard(user.id, { visible_fields: next });
     await qc.invalidateQueries({ queryKey: ["emergency-card", user.id] });
@@ -163,7 +170,22 @@ function EmergencyCardPage() {
             <Button variant="outline" className="rounded-2xl" onClick={() => window.print()}>
               <Printer className="mr-1 h-4 w-4" /> Print / download
             </Button>
-            <Button variant="outline" className="rounded-2xl" onClick={() => setEditing((v) => !v)}>
+            <Button
+              variant="outline"
+              className="rounded-2xl"
+              onClick={async () => {
+                if (editing) {
+                  setEditing(false);
+                  return;
+                }
+                const verified = await requireAuth({
+                  level: "sensitive",
+                  reason:
+                    "Verify your identity to edit blood group, allergies, conditions, medicines and emergency contacts.",
+                });
+                if (verified) setEditing(true);
+              }}
+            >
               {editing ? "Done editing" : "Edit card"}
             </Button>
           </div>
@@ -184,7 +206,7 @@ function EmergencyCardPage() {
             </div>
           </section>
 
-          {editing && <CardEditor card={data} onSaved={() => qc.invalidateQueries({ queryKey: ["emergency-card", user?.id] })} />}
+          {editing && <CardEditor requireAuth={requireAuth} card={data} onSaved={() => qc.invalidateQueries({ queryKey: ["emergency-card", user?.id] })} />}
         </>
       )}
     </div>
@@ -203,7 +225,9 @@ function Field({ label, value }: { label: string; value: string }) {
 function CardEditor({
   card,
   onSaved,
+  requireAuth,
 }: {
+  requireAuth: ReturnType<typeof useSecurity>["requireAuth"];
   card: { patient_id: string; blood_group: string | null; allergies: string[]; conditions: string[]; current_medicines: string[]; notes: string | null };
   onSaved: () => void;
 }) {
@@ -223,6 +247,11 @@ function CardEditor({
       className="card-soft space-y-3 p-5 print:hidden"
       onSubmit={async (e) => {
         e.preventDefault();
+        const verified = await requireAuth({
+          level: "sensitive",
+          reason: "Confirm with your passkey to save changes to your emergency medical information.",
+        });
+        if (!verified) return;
         setBusy(true);
         try {
           await EmergencyService.updateCard(card.patient_id, {

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { SecureGate } from "@/components/security/SecureGate";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -34,7 +35,7 @@ export const Route = createFileRoute("/_authenticated/app/records/")({
       { property: "og:description", content: "A searchable timeline of your health history." },
     ],
   }),
-  component: RecordsPage,
+  component: ProtectedRecordsPage,
 });
 
 type MedRecord = Tables<"medical_records">;
@@ -451,5 +452,17 @@ function RecordForm({
         </div>
       </form>
     </div>
+  );
+}
+
+function ProtectedRecordsPage() {
+  return (
+    <SecureGate
+      level="sensitive"
+      title={"Medical Records are locked"}
+      reason={"Your medical history, prescriptions, lab reports and scans are protected. Verify with your passkey to view them."}
+    >
+      <RecordsPage />
+    </SecureGate>
   );
 }

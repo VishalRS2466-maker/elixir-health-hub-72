@@ -76,7 +76,9 @@ export function NearbyMap({
   onSelect,
   category,
   className,
+  userLocation,
 }: {
+  userLocation?: { lat: number; lng: number } | null;
   center: { lat: number; lng: number };
   places: MapPlace[];
   activeId?: string | null;
@@ -87,6 +89,7 @@ export function NearbyMap({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
+  const userMarkerRef = useRef<any>(null);
   const listenersRef = useRef<any[]>([]);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(!BROWSER_KEY);
@@ -107,6 +110,8 @@ export function NearbyMap({
             zoom: 13,
             disableDefaultUI: true,
             zoomControl: true,
+            fullscreenControl: true,
+            gestureHandling: "greedy",
             clickableIcons: false,
           });
         }
@@ -121,6 +126,8 @@ export function NearbyMap({
       listenersRef.current = [];
       markersRef.current.forEach((m) => m.setMap(null));
       markersRef.current = [];
+      userMarkerRef.current?.setMap(null);
+      userMarkerRef.current = null;
       mapRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -128,8 +135,25 @@ export function NearbyMap({
 
   useEffect(() => {
     if (!ready || !mapRef.current) return;
-    mapRef.current.setCenter(center);
-  }, [ready, center.lat, center.lng]);
+    if (places.length === 0) mapRef.current.setCenter(center);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, center.lat, center.lng, places.length]);
+
+  // The map is laid out inside a flexible grid; refit whenever it is resized so
+  // tiles are never cropped and markers stay inside the viewport.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!ready || !el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => {
+      const map = mapRef.current;
+      if (!map || !window.google) return;
+      const current = map.getCenter();
+      window.google.maps.event.trigger(map, "resize");
+      if (current) map.setCenter(current);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [ready]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -141,7 +165,24 @@ export function NearbyMap({
     markersRef.current = [];
 
     const bounds = new window.google.maps.LatLngBounds();
-    bounds.extend(center);
+    const origin = userLocation ?? center;
+    bounds.extend(origin);
+
+    userMarkerRef.current?.setMap(null);
+    userMarkerRef.current = new window.google.maps.Marker({
+      map,
+      position: origin,
+      title: userLocation ? "Your location" : "Search location",
+      zIndex: 999,
+      icon: {
+        path: window.google.maps.SymbolPath.CIRCLE,
+        scale: 8,
+        fillColor: "#1a73e8",
+        fillOpacity: 1,
+        strokeColor: "#ffffff",
+        strokeWeight: 3,
+      },
+    });
 
     places
       .filter((p) => p.lat !== null && p.lng !== null)
@@ -165,8 +206,18 @@ export function NearbyMap({
         bounds.extend(marker.getPosition());
       });
 
-    if (places.length > 0) map.fitBounds(bounds, 48);
-  }, [ready, places, activeId, category, center.lat, center.lng, onSelect]);
+    if (places.length > 0) {
+      map.fitBounds(bounds, 56);
+      // Avoid zooming absurdly close when only one facility is nearby.
+      const once = window.google.maps.event.addListenerOnce(map, "idle", () => {
+        if (map.getZoom() > 16) map.setZoom(16);
+      });
+      listenersRef.current.push(once);
+    } else {
+      map.setCenter(origin);
+      map.setZoom(13);
+    }
+  }, [ready, places, activeId, category, center.lat, center.lng, userLocation?.lat, userLocation?.lng, onSelect]);
 
   if (failed) {
     return (

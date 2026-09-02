@@ -126,6 +126,7 @@ function NearbyTab() {
   const [manualBusy, setManualBusy] = useState(false);
   const [availableToday, setAvailableToday] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [userLocation, setUserLocation] = useState<Coords | null>(null);
   const [booking, setBooking] = useState<{ facility: Facility; kind: "test" | "scan" } | null>(null);
 
   const locate = useCallback(() => {
@@ -134,6 +135,7 @@ function NearbyTab() {
     LocationService.getCurrentPosition()
       .then((coords) => {
         setCenter(coords);
+        setUserLocation(coords);
         setLocationLabel("Your current location");
         setGeoState("idle");
       })
@@ -283,8 +285,9 @@ function NearbyTab() {
         </p>
       )}
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_1.1fr]">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,6fr)_minmax(0,4fr)] xl:gap-5">
         <NearbyMap
+          userLocation={userLocation}
           center={center}
           places={facilities.map((f) => ({
             id: f.id,
@@ -296,10 +299,10 @@ function NearbyTab() {
           activeId={activeId}
           onSelect={setActiveId}
           category={kind}
-          className="h-64 w-full lg:sticky lg:top-4 lg:h-[520px]"
+          className="h-[46vh] min-h-[320px] w-full md:h-[56vh] lg:sticky lg:top-20 lg:h-[calc(100vh-9rem)]"
         />
 
-        <div className="space-y-3">
+        <div className="space-y-3 lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto lg:pr-1">
           {results.isLoading &&
             [0, 1, 2].map((i) => <Skeleton key={i} className="h-36 w-full rounded-3xl" />)}
 

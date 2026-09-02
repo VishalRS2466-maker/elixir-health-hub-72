@@ -127,7 +127,7 @@ function HomePage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-5">
+    <div className="w-full space-y-5">
       {/* Header: greeting, ID, compact SOS */}
       <div className="flex items-start justify-between gap-3">
         <div>
@@ -167,7 +167,7 @@ function HomePage() {
       )}
 
       {/* Quick access: light icon tiles */}
-      <section className="grid grid-cols-3 gap-4 sm:grid-cols-6">
+      <section className="grid grid-cols-3 gap-4 sm:grid-cols-6 xl:gap-5">
         {QUICK.map((q) => (
           <Link key={q.to} to={q.to} className="group flex flex-col items-center gap-2">
             <span
@@ -181,8 +181,8 @@ function HomePage() {
       </section>
 
       {/* Main content: packed two-column grid on wide screens */}
-      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-5">
-        <div className="space-y-5 lg:col-span-3">
+      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-5 xl:grid-cols-3 xl:gap-6">
+        <div className="space-y-5 lg:col-span-3 xl:col-span-2">
       {/* Next medicine: primary focus */}
       <section className="rounded-3xl border bg-card p-6 shadow-sm">
         {nextReminder ? (
@@ -295,7 +295,7 @@ function HomePage() {
         </div>
 
       {/* Secondary info: appointment + records stacked */}
-      <div className="space-y-5 lg:col-span-2">
+      <div className="space-y-5 lg:col-span-2 xl:col-span-1">
         <div className="rounded-2xl border bg-card p-5">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-sm font-bold">Upcoming</h3>
