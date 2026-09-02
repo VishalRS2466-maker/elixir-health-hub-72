@@ -230,23 +230,10 @@ function HomePage() {
           />
         )}
       </section>
+        </div>
 
-      {/* Quick access: light icon tiles */}
-      <section className="grid grid-cols-3 gap-4 sm:grid-cols-6">
-        {QUICK.map((q) => (
-          <Link key={q.to} to={q.to} className="group flex flex-col items-center gap-2">
-            <span
-              className={`flex h-14 w-14 items-center justify-center rounded-2xl border border-transparent ${q.tone} text-primary transition-colors group-hover:border-primary/20 group-hover:bg-primary/10`}
-            >
-              <q.icon className="h-6 w-6" />
-            </span>
-            <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground">{q.label}</span>
-          </Link>
-        ))}
-      </section>
-
-      {/* Secondary info: appointment + records side by side */}
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      {/* Secondary info: appointment + records stacked */}
+      <div className="space-y-5 lg:col-span-2">
         <div className="rounded-2xl border bg-card p-5">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-sm font-bold">Upcoming</h3>
