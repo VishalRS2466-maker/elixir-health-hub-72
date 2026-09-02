@@ -19,17 +19,17 @@ export const Route = createFileRoute("/_authenticated/doctor")({
 });
 
 function DoctorLayout() {
-  const { role, loading } = useSession();
+  const { role, roleLoading } = useSession();
   return (
     <ThemeProvider>
       <DoctorShell>
-        {loading ? (
+        {roleLoading ? (
           <div className="h-40 animate-pulse rounded-2xl bg-muted" />
         ) : role !== "doctor" ? (
           <EmptyState
             icon={Stethoscope}
             title="Doctor Portal"
-            description="This portal is available to accounts verified as a doctor."
+            description="This portal is available to accounts verified as a doctor. Your account does not have doctor access."
           />
         ) : (
           <Outlet />

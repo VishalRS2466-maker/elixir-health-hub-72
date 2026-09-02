@@ -36,12 +36,15 @@ const schema = z.object({
 const ROLES = ["patient", "doctor", "admin"] as const;
 
 
-async function landingRoute(): Promise<"/app" | "/doctor"> {
+/** The destination is decided from the server-verified role, never from client state. */
+async function landingRoute(): Promise<"/app" | "/doctor" | "/app/admin"> {
   const { data } = await supabase.auth.getUser();
   if (!data.user) return "/app";
   try {
-    const roles = await AuthService.getRoles(data.user.id);
-    return roles.includes("doctor") && !roles.includes("admin") ? "/doctor" : "/app";
+    const roles = await AuthService.getRoles();
+    if (roles.includes("admin")) return "/app/admin";
+    if (roles.includes("doctor")) return "/doctor";
+    return "/app";
   } catch {
     return "/app";
   }
@@ -103,12 +106,13 @@ function LoginPage() {
 
       const { data } = await supabase.auth.getUser();
       if (data.user) {
-        const roles = await AuthService.getRoles(data.user.id);
+        const roles = await AuthService.getRoles();
         if (roles.length === 0) {
+          // Server decides the role from the signup metadata; the picker above is only a hint.
           await AuthService.bootstrapAccount({
             fullName: data.user.user_metadata["full_name"] ?? "User",
             email: form.email,
-            role: "patient",
+            role,
           });
         } else if (!roles.includes(role)) {
           toast.message(`Signed in with your ${roles[0]} access.`);

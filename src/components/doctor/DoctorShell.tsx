@@ -26,11 +26,12 @@ const NAV = [
   { to: "/doctor/requests", label: "Patient Requests", icon: FileHeart },
   { to: "/doctor/consent", label: "Consent", icon: ShieldCheck },
   { to: "/doctor/ai", label: "AI Clinical Assistant", icon: Bot },
+  { to: "/doctor/notifications", label: "Notifications", icon: Bell },
 ];
 
 const SECONDARY = [
-  { to: "/app/profile", label: "Profile", icon: UserRound },
-  { to: "/app/settings", label: "Security & Settings", icon: Settings },
+  { to: "/doctor/profile", label: "Doctor Profile", icon: UserRound },
+  { to: "/doctor/settings", label: "Security & Settings", icon: Settings },
 ];
 
 export function DoctorShell({ children }: { children: ReactNode }) {
@@ -59,11 +60,16 @@ export function DoctorShell({ children }: { children: ReactNode }) {
           </div>
           <div className="ml-auto flex items-center gap-2">
             <Link
-              to="/doctor"
+              to="/doctor/profile"
               className="hidden items-center gap-2 rounded-full bg-slate-800 px-3 py-1.5 text-xs text-slate-300 sm:flex"
             >
-              <Bell className="h-3.5 w-3.5" />
-              {profile?.full_name ?? "Doctor"}
+              <UserRound className="h-3.5 w-3.5" />
+              <span className="max-w-[180px] truncate">
+                Dr. {(profile?.full_name ?? "Doctor").replace(/^Dr\.?\s*/i, "")}
+              </span>
+              <span className="rounded-full bg-primary/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+                Doctor
+              </span>
             </Link>
             <Button
               size="sm"
